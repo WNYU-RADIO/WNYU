@@ -55,7 +55,7 @@ export default async function Page({ params }: { params: PlaylistParams }) {
       </div>
       <div className="flex flex-col p-4 md:w-1/2 md:px-20">
         {spins.items &&
-          spins.items.map((spin, index) => (
+          spins.items.toReversed().map((spin, index) => (
             <div className="mx-2 flex gap-x-2 pb-4" key={spin.id}>
               <p>{index + 1}.</p>
               <p>
