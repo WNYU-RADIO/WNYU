@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useRef, useContext } from 'react';
+import { useState, useRef } from 'react';
 import { PlayIcon, PauseIcon } from '@heroicons/react/24/solid';
-import { DropdownToggleContext } from '../providers/ToggleProvider';
 
 export default function Stream() {
   const [isPlaying, setIsPlaying] = useState(false);
