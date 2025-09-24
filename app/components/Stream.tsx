@@ -7,7 +7,6 @@ import { DropdownToggleContext } from '../providers/ToggleProvider';
 export default function Stream() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const context = useContext(DropdownToggleContext);
 
   const handleClick = () => {
     if (audioRef.current) {
