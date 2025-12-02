@@ -33,7 +33,7 @@ export default async function PodcastPage({
   const { slug } = await params;
 
   return (
-    <div className="h-[calc(100dvh-16rem)] md:mx-2">
+    <div className="h-[calc(100dvh-4rem)] md:mx-2">
       <PodcastsProvider slug={slug} />
     </div>
   );
