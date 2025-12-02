@@ -13,7 +13,6 @@ async function getShows(): Promise<ShowsResponse> {
   }
   const output = res.json() as Promise<ShowsResponse>;
 
-  console.log(output);
   return output;
 }
 

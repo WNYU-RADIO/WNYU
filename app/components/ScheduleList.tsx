@@ -32,11 +32,11 @@ export default function ScheduleList({ shows }: ScheduleListProps) {
     setFilteredShows(filtered);
   }, [dayFilter, nameFilter, shows]);
 
-  const hosts = (show: Show) => {
+  const getHosts = (show: Show) => {
     let hosts = show.personas?.[0].name ?? 'WNYU DJs';
     if (show.personas && show.personas.length > 1) {
-      for (let i = 1; i < show.personas.length; i++) {
-        hosts += ' & ' + show.personas[i].name;
+      for (let i = 1; i < show.personas.length; i += 1) {
+        hosts += ` & ${show.personas[i].name}`;
       }
     }
     return hosts;
@@ -54,7 +54,7 @@ export default function ScheduleList({ shows }: ScheduleListProps) {
         {filteredShows.map((show) => (
           <ListItem
             url={`/schedule/${show.id}`}
-            host={hosts(show)}
+            host={getHosts(show)}
             title={show.title}
             start={new Date(show.start).toLocaleTimeString('en-US', {
               hour: 'numeric',
