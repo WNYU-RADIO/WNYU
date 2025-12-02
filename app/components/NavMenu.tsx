@@ -41,6 +41,7 @@ export default function NavMenu() {
           transition={{ duration: 0.5, ease: 'easeInOut' }}
           className="fixed left-0 top-0 z-40 flex h-auto w-full items-start justify-start overflow-y-auto bg-black p-4"
         >
+          {/* mobile dropdown */}
           <div className="h3 my-7 ml-7 flex cursor-pointer flex-col space-y-7 text-white">
             <Link href="/home" onClick={handleClose}>
               home
@@ -68,6 +69,7 @@ export default function NavMenu() {
           />
         </motion.div>
       </div>
+      {/* desktop bar */}
       <div className="hidden cursor-pointer flex-row items-end justify-end space-x-4 text-xl text-black md:flex">
         <Link className="hover:text-red-600" href="/home">
           HOME

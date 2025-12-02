@@ -18,7 +18,7 @@ export function ArticleCard({ article }: { article: ARTICLE_QUERYResult }) {
               urlFor(picture?.asset?._ref).width(600).height(300).url() ??
               '/placeholder.png'
             }
-            width={600}
+            width={800}
             height={300}
             alt={name ?? ''}
           />

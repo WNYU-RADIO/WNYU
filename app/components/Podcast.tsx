@@ -8,7 +8,7 @@ export default function Podcast({ podcast }: { podcast: PODCAST_QUERYResult }) {
   const { name, host, picture, description, spotifyEpisodeURLs } =
     podcast || {};
   return (
-    <div className="mx-auto flex max-w-[1200px] flex-col gap-8 space-y-6">
+    <div className="mx-auto flex max-w-[1200px] flex-col gap-6 space-y-6">
       <div className="">
         {picture?.asset?._ref && host && name ? (
           <div className="mb-4 flex flex-col gap-4">
