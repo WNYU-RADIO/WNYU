@@ -7,6 +7,16 @@ interface ShowDetailProps {
 }
 
 export default function ShowDetail({ show }: ShowDetailProps) {
+  const getHosts = () => {
+    let hosts = show.personas?.[0].name ?? 'WNYU DJs';
+    if (show.personas && show.personas.length > 1) {
+      for (let i = 1; i < show.personas.length; i += 1) {
+        hosts += ` & ${show.personas[i].name}`;
+      }
+    }
+    return hosts;
+  };
+
   return (
     <div className="pb-6">
       <div>
@@ -18,7 +28,7 @@ export default function ShowDetail({ show }: ShowDetailProps) {
           className="h-[300px] w-full border-2 border-black object-cover md:mt-1"
         />
         <h4 className="pt-4">{show.title}</h4>
-        <p>hosted by: {show.personas?.[0].name ?? 'unhosted'}</p>
+        <p>hosted by: {getHosts()}</p>
         <div>
           {new Date(show.start).toLocaleTimeString('en-US', {
             weekday: 'long',
