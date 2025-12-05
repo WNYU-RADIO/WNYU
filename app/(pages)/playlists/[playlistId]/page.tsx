@@ -10,15 +10,15 @@ export default async function Page({ params }: { params: PlaylistParams }) {
 
   const playlist = (await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/playlists/${playlistId}`,
-    { cache: 'force-cache' },
+    { cache: 'default', next: { revalidate: 3600 } },
   ).then((res) => res.json())) as Playlist;
   const spins: SpinsResponse = (await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/spins?playlist_id=${playlistId}&count=100`,
-    { cache: 'force-cache' },
+    { cache: 'default', next: { revalidate: 3600 } },
   ).then((res) => res.json())) as SpinsResponse;
   const persona: Persona = (await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/personas/${playlist.persona_id}`,
-    { cache: 'force-cache' },
+    { cache: 'default', next: { revalidate: 3600 } },
   ).then((res) => res.json())) as Persona;
 
   return (
