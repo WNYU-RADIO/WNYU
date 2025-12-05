@@ -10,7 +10,7 @@ async function ScheduleProvider({ showId }: { showId: string | undefined }) {
     playlists = (await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/playlists?show_id=${showId}`,
       {
-        cache: 'force-cache',
+        cache: 'default', next: { revalidate: 3600 } 
       },
     ).then((res) => res.json())) as PlaylistsResponse;
     const intShowId = parseInt(showId, 10);
