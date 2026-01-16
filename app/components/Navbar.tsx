@@ -50,14 +50,13 @@ export default function Navbar({
             context?.toggle ? 'text-white' : ''
           } md:bg-white md:text-black`}
         >
-          <LogoBlock />
-          <Stream />
-          <div
-            onClick={handleClick}
-            className="flex cursor-default items-center overflow-hidden"
-          >
+          <div className="z-[100] flex flex-row">
+            <LogoBlock />
+            <Stream />
+          </div>
+          <div className="flex cursor-default items-center overflow-hidden">
             {/* Marquee */}
-            <div className="flex-grow">
+            <div className="z-[51] flex-grow">
               <Marquee
                 autoFill={true}
                 gradient={!context?.toggle}
@@ -67,7 +66,7 @@ export default function Navbar({
                   <div className="h-[1rem] w-[1rem] rounded-full bg-red-500" />
                 </div>
 
-                <span>
+                <span onClick={handleClick}>
                   Live Now: {metadata?.playlist_title} with {metadata?.dj}
                 </span>
               </Marquee>

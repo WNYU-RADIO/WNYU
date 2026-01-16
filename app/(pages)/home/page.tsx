@@ -35,7 +35,7 @@ export default async function Home() {
           })}
         </div>
       </div>
-      <div className="mx-auto overflow-hidden border-2 border-black md:sticky md:top-[5.5rem] md:mx-0 md:h-[calc(100dvh-8rem)] md:max-w-[400px]">
+      <div className="mx-auto overflow-hidden border-2 border-black md:sticky md:top-[5.5rem] md:mx-0 md:h-min md:max-w-[400px]">
         <CurrentPlaylistPanel />
       </div>
       <div className="h-[450px] w-full md:hidden">

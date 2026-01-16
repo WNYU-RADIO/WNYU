@@ -65,10 +65,10 @@ export default function ScheduleSearchBar({
         <ChevronRightIcon className="h-8 w-8" onClick={handleNextDay} />
       </div>
 
-      <div className="hidden bg-white md:flex">
-        <div className="flex py-1">
+      <div className="relative hidden from-0% to-100% pb-2 md:flex">
+        <div className="flex pt-1">
           <MagnifyingGlassIcon className="mr-2 h-8 w-8" onClick={onClick} />
-          <div className="py-1">
+          <div className="relative py-1">
             <input
               id="scheduleSearch"
               ref={inputRef}
@@ -76,13 +76,13 @@ export default function ScheduleSearchBar({
               value={nameFilter}
               onChange={(e) => setNameFilter(e.target.value)}
               placeholder="Search"
-              className={`rounded bg-slate-300 transition-all ease-in-out ${
+              className={`z-20 rounded bg-slate-300 transition-all ease-in-out ${
                 searchOpen ? 'w-full' : 'w-0'
               }`}
             />
           </div>
         </div>
-        <div className="flex flex-wrap">
+        <div className="z-10 flex flex-wrap">
           {daysOfWeek.map((day) => (
             <div
               key={day}
@@ -108,7 +108,7 @@ export default function ScheduleSearchBar({
             value={nameFilter}
             onChange={(e) => setNameFilter(e.target.value)}
             placeholder="Search"
-            className="w-full rounded border-2 border-black p-2"
+            className="z-5 w-full rounded border-2 border-black p-2"
           />
         </div>
       </div>
