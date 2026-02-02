@@ -14,7 +14,10 @@ export function ManagementCard({
       {picture?.asset?._ref ? (
         <Image
           className="aspect-square border-2 border-black"
-          src={urlFor(picture?.asset?._ref).width(400).height(400).url()}
+          src={
+            urlFor(picture?.asset?._ref).width(400).height(400).url() ??
+            '/dj-placeholder.png'
+          }
           width={400}
           height={400}
           alt={name || ''}
