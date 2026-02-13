@@ -25,13 +25,15 @@ export default async function Page({ params }: { params: PlaylistParams }) {
     <div className="pt-4 md:flex md:items-start">
       <div className="md:w-1/2">
         <div className="z-10 p-4 md:top-20">
-          <div className="mb-2 flex items-center gap-x-2">
-            <Link href={`/schedule/${playlist.show_id}`} className="md:block">
+          <Link href={`/schedule/${playlist.show_id}`} className="md:block">
+            <div className="z-20 mb-2 flex items-center gap-x-2">
               <ChevronLeftIcon className="mr-6 h-6 w-6" />
-            </Link>
-            <p>{new Date(playlist.start).toDateString()}</p>
-          </div>
-          <h1 className="break-words md:pb-4">{playlist.title}</h1>
+              <p>{new Date(playlist.start).toDateString()}</p>
+            </div>
+          </Link>
+          <h1 className="pointer-events-none break-words md:pb-4">
+            {playlist.title}
+          </h1>
           <p className="pt-4">{`hosted by ${persona.name}`}</p>
           <p>
             {new Date(playlist.start).toLocaleTimeString('en-US', {
@@ -53,7 +55,7 @@ export default async function Page({ params }: { params: PlaylistParams }) {
       </div>
       <div className="flex flex-col p-4 md:w-1/2 md:px-20">
         {spins.items &&
-          spins.items.map((spin, index) => (
+          spins.items.toReversed().map((spin, index) => (
             <div className="mx-2 flex gap-x-2 pb-4" key={spin.id}>
               <p>{index + 1}.</p>
               <p>
