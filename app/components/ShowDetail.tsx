@@ -35,12 +35,14 @@ export default function ShowDetail({ show }: ShowDetailProps) {
             hour: 'numeric',
             minute: 'numeric',
             hour12: true,
-          })}{' '}
+            timeZone: 'America/New_York',
+          })}
           {' - '}
           {new Date(show.end).toLocaleTimeString('en-US', {
             hour: 'numeric',
             minute: 'numeric',
             hour12: true,
+            timeZone: 'America/New_York',
           })}
         </div>
       </div>
