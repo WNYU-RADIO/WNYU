@@ -5,12 +5,12 @@ import Marquee from 'react-fast-marquee';
 import { useState, useEffect, useContext } from 'react';
 import { useMetadata } from '@/app/client-api';
 import { DropdownToggleContext } from '../providers/ToggleProvider';
+import { CurrentDataContext } from '../providers/CurrentDataProvider';
+import { isPlaylistOnAir } from '../utils';
 import DropDownPanel from './DropDownPanel';
 import NavMenu from './NavMenu';
 import Stream from './Stream';
 import LogoBlock from './LogoBlock';
-import { CurrentDataContext } from '../providers/CurrentDataProvider';
-import { isPlaylistOnAir } from '../utils';
 
 const REFRESH_STREAM_INTERVAL = 5000;
 

@@ -3,8 +3,7 @@
 import { Playlist, SpinitronMetadata } from '@wnyu/spinitron-sdk';
 import Image from 'next/image';
 import Link from 'next/link';
-import { trimSpinitronDescriptionString } from '../utils';
-import { isPlaylistOnAir } from '../utils';
+import { isPlaylistOnAir, trimSpinitronDescriptionString } from '../utils';
 
 interface CurrentPlaylistInfoProps {
   playlist?: Playlist;
@@ -19,8 +18,8 @@ export default function CurrentPlaylistInfo({
 }: CurrentPlaylistInfoProps) {
   const isOnAir = isPlaylistOnAir(playlist);
   const currentTitle = isOnAir
-    ? metadata?.playlist_title ?? playlist?.title
-    : metadata?.playlist_title ?? playlist?.title ?? 'No show played yet';
+    ? (metadata?.playlist_title ?? playlist?.title)
+    : (metadata?.playlist_title ?? playlist?.title ?? 'No show played yet');
 
   return (
     <>

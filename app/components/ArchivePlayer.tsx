@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
-import Hls from "hls.js";
+import { useEffect, useRef, useState } from 'react';
+import Hls from 'hls.js';
 
 interface ArchivePlayerProps {
   durationSeconds: number;
@@ -23,11 +23,11 @@ export default function ArchivePlayer({
   const [currentTime, setCurrentTime] = useState(0);
 
   useEffect(() => {
-    if (!showStartTimeUTC) return;
+    if (!showStartTimeUTC) return () => undefined;
 
     const showDate = new Date(showStartTimeUTC);
     const currentDate = new Date();
-    
+
     // Calculate the difference in days
     const timeDifference = currentDate.getTime() - showDate.getTime();
     const daysOld = timeDifference / (1000 * 3600 * 24);
@@ -38,7 +38,7 @@ export default function ArchivePlayer({
     previousHls?.destroy();
     audio?.pause();
     if (audio) {
-      audio.removeAttribute("src");
+      audio.removeAttribute('src');
       audio.load();
     }
     setErrorMessage(null);
@@ -48,10 +48,10 @@ export default function ArchivePlayer({
     // If the show is more than 14 days old, display the expired notice
     if (daysOld > 14) {
       setIsExpired(true);
-      return;
+      return () => undefined;
     }
 
-    if (!audio) return;
+    if (!audio) return () => undefined;
 
     const stopAtEpisodeEnd = () => {
       if (audio.currentTime >= playbackDurationSeconds) {
@@ -67,16 +67,15 @@ export default function ArchivePlayer({
     const updateTime = () =>
       setCurrentTime(Math.min(audio.currentTime, playbackDurationSeconds));
     const updatePlayingState = () => setIsPlaying(!audio.paused);
-    audio.addEventListener("timeupdate", stopAtEpisodeEnd);
-    audio.addEventListener("seeking", clampSeekToEpisode);
-    audio.addEventListener("timeupdate", updateTime);
-    audio.addEventListener("play", updatePlayingState);
-    audio.addEventListener("pause", updatePlayingState);
+    audio.addEventListener('timeupdate', stopAtEpisodeEnd);
+    audio.addEventListener('seeking', clampSeekToEpisode);
+    audio.addEventListener('timeupdate', updateTime);
+    audio.addEventListener('play', updatePlayingState);
+    audio.addEventListener('pause', updatePlayingState);
 
-    const streamUrl = `https://ark3.spinitron.com/ark2/WNYU-${showDate
-      .toISOString()
-      .replace(/[-:]/g, "")
-      .split(".")[0]}Z/index.m3u8`;
+    const streamUrl = `https://ark3.spinitron.com/ark2/WNYU-${
+      showDate.toISOString().replace(/[-:]/g, '').split('.')[0]
+    }Z/index.m3u8`;
     const hls = new Hls();
     hlsRef.current = hls;
     hls.loadSource(streamUrl);
@@ -89,20 +88,19 @@ export default function ArchivePlayer({
     });
 
     return () => {
-      audio.removeEventListener("timeupdate", stopAtEpisodeEnd);
-      audio.removeEventListener("seeking", clampSeekToEpisode);
-      audio.removeEventListener("timeupdate", updateTime);
-      audio.removeEventListener("play", updatePlayingState);
-      audio.removeEventListener("pause", updatePlayingState);
+      audio.removeEventListener('timeupdate', stopAtEpisodeEnd);
+      audio.removeEventListener('seeking', clampSeekToEpisode);
+      audio.removeEventListener('timeupdate', updateTime);
+      audio.removeEventListener('play', updatePlayingState);
+      audio.removeEventListener('pause', updatePlayingState);
       if (hlsRef.current === hls) {
         hlsRef.current = null;
         hls.destroy();
         audio.pause();
-        audio.removeAttribute("src");
+        audio.removeAttribute('src');
         audio.load();
       }
     };
-
   }, [playbackDurationSeconds, showStartTimeUTC]);
 
   if (isExpired) {
@@ -122,7 +120,7 @@ export default function ArchivePlayer({
     const wholeSeconds = Math.max(0, Math.floor(seconds));
     const minutes = Math.floor(wholeSeconds / 60);
     const remainingSeconds = wholeSeconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
   const togglePlayback = () => {
@@ -151,23 +149,25 @@ export default function ArchivePlayer({
           onClick={togglePlayback}
           className="border border-black px-4 py-2 text-sm font-bold uppercase"
         >
-          {isPlaying ? "Pause" : "Play"}
+          {isPlaying ? 'Pause' : 'Play'}
         </button>
         <div className="flex w-full items-center gap-2 border border-black px-4 py-2">
-        <span className="text-sm tabular-nums ">{formatTime(currentTime)}</span>
-        <input
-          type="range"
-          min="0"
-          max={playbackDurationSeconds}
-          step="1"
-          value={Math.min(currentTime, playbackDurationSeconds)}
-          onChange={(event) => seekTo(event.target.value)}
-          className="min-w-0 flex-1"
-          aria-label="Archive position"
-        />
-        <span className="text-sm tabular-nums">
-          {formatTime(playbackDurationSeconds)}
-        </span>
+          <span className="text-sm tabular-nums">
+            {formatTime(currentTime)}
+          </span>
+          <input
+            type="range"
+            min="0"
+            max={playbackDurationSeconds}
+            step="1"
+            value={Math.min(currentTime, playbackDurationSeconds)}
+            onChange={(event) => seekTo(event.target.value)}
+            className="min-w-0 flex-1"
+            aria-label="Archive position"
+          />
+          <span className="text-sm tabular-nums">
+            {formatTime(playbackDurationSeconds)}
+          </span>
         </div>
       </div>
       {errorMessage && (

@@ -1,8 +1,8 @@
 import { ChevronLeftIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import { trimSpinitronDescriptionString } from '@/app/utils';
-import type { Persona, Playlist, SpinsResponse } from '@wnyu/spinitron-sdk';
 import ArchivePlayer from '../../../components/ArchivePlayer';
+import type { Persona, Playlist, SpinsResponse } from '@wnyu/spinitron-sdk';
 
 type PlaylistParams = Promise<{ playlistId: string }>;
 
