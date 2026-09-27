@@ -5,6 +5,8 @@ import Marquee from 'react-fast-marquee';
 import { useState, useEffect, useContext } from 'react';
 import { useMetadata } from '@/app/client-api';
 import { DropdownToggleContext } from '../providers/ToggleProvider';
+import { CurrentDataContext } from '../providers/CurrentDataProvider';
+import { isPlaylistOnAir } from '../utils';
 import DropDownPanel from './DropDownPanel';
 import NavMenu from './NavMenu';
 import Stream from './Stream';
@@ -20,6 +22,8 @@ export default function Navbar({
   const [metadataResponse, refreshMetadata] = useMetadata();
   const [metadata, setMetadata] = useState<SpinitronMetadata>();
   const context = useContext(DropdownToggleContext);
+  const current = useContext(CurrentDataContext);
+  const isOnAir = isPlaylistOnAir(current.playlist);
 
   const handleClick = () => {
     context?.setToggle(!context?.toggle);
@@ -68,7 +72,9 @@ export default function Navbar({
                 </div>
 
                 <span>
-                  Live Now: {metadata?.playlist_title} with {metadata?.dj}
+                  {isOnAir
+                    ? `Live Now: ${metadata?.playlist_title ?? current.playlist?.title ?? 'Unknown show'} with ${metadata?.dj ?? 'unhosted'}`
+                    : ' You are listening to the WNYU JUKEBOX. Check out our schedule for upcoming shows! '}
                 </span>
               </Marquee>
             </div>
