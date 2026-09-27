@@ -9,6 +9,8 @@ import DropDownPanel from './DropDownPanel';
 import NavMenu from './NavMenu';
 import Stream from './Stream';
 import LogoBlock from './LogoBlock';
+import { CurrentDataContext } from '../providers/CurrentDataProvider';
+import { isPlaylistOnAir } from '../utils';
 
 const REFRESH_STREAM_INTERVAL = 5000;
 
@@ -20,6 +22,8 @@ export default function Navbar({
   const [metadataResponse, refreshMetadata] = useMetadata();
   const [metadata, setMetadata] = useState<SpinitronMetadata>();
   const context = useContext(DropdownToggleContext);
+  const current = useContext(CurrentDataContext);
+  const isOnAir = isPlaylistOnAir(current.playlist);
 
   const handleClick = () => {
     context?.setToggle(!context?.toggle);
@@ -68,7 +72,9 @@ export default function Navbar({
                 </div>
 
                 <span>
-                  Live Now: {metadata?.playlist_title} with {metadata?.dj}
+                  {isOnAir
+                    ? `Live Now: ${metadata?.playlist_title ?? current.playlist?.title ?? 'Unknown show'} with ${metadata?.dj ?? 'unhosted'}`
+                    : ' You are listening to the WNYU JUKEBOX. Check out our schedule for upcoming shows! '}
                 </span>
               </Marquee>
             </div>

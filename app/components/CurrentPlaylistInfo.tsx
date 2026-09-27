@@ -4,6 +4,7 @@ import { Playlist, SpinitronMetadata } from '@wnyu/spinitron-sdk';
 import Image from 'next/image';
 import Link from 'next/link';
 import { trimSpinitronDescriptionString } from '../utils';
+import { isPlaylistOnAir } from '../utils';
 
 interface CurrentPlaylistInfoProps {
   playlist?: Playlist;
@@ -16,6 +17,11 @@ export default function CurrentPlaylistInfo({
   metadata,
   dropdown = false,
 }: CurrentPlaylistInfoProps) {
+  const isOnAir = isPlaylistOnAir(playlist);
+  const currentTitle = isOnAir
+    ? metadata?.playlist_title ?? playlist?.title
+    : metadata?.playlist_title ?? playlist?.title ?? 'No show played yet';
+
   return (
     <>
       {dropdown ? (
@@ -28,7 +34,7 @@ export default function CurrentPlaylistInfo({
               alt={playlist.title || ''}
             />
           )}
-          <p className="mt-8 font-bold">{metadata?.playlist_title}</p>
+          <p className="mt-8 font-bold">{currentTitle}</p>
           <p className="">
             {metadata?.dj
               ? `hosted by: ${metadata.dj.toUpperCase()}`
@@ -56,12 +62,12 @@ export default function CurrentPlaylistInfo({
       ) : (
         <>
           <div className="flex w-full flex-col text-left">
-            <p>NOW PLAYING:</p>
+            <p>{isOnAir ? 'NOW PLAYING:' : 'LAST PLAYED:'}</p>
             <h4 className="font-bold">
               <Link
                 href={metadata?.show_id ? `/schedule/${metadata.show_id}` : `/`}
               >
-                {metadata?.playlist_title ?? 'WNYU JUKEBOX'}
+                {currentTitle}
               </Link>
             </h4>
             <p className="">

@@ -2,6 +2,7 @@ import { ChevronLeftIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import { trimSpinitronDescriptionString } from '@/app/utils';
 import type { Persona, Playlist, SpinsResponse } from '@wnyu/spinitron-sdk';
+import ArchivePlayer from '../../../components/ArchivePlayer';
 
 type PlaylistParams = Promise<{ playlistId: string }>;
 
@@ -51,6 +52,14 @@ export default async function Page({ params }: { params: PlaylistParams }) {
           <p className="mt-4 hidden md:block">
             {trimSpinitronDescriptionString(playlist.description)}
           </p>
+          {playlist.start && (
+            <div className="mt-6 md:block">
+              <ArchivePlayer
+                durationSeconds={playlist.duration}
+                showStartTimeUTC={playlist.start}
+              />
+            </div>
+          )}
         </div>
       </div>
       <div className="flex flex-col p-4 md:w-1/2 md:px-20">
