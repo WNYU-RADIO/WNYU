@@ -1,4 +1,4 @@
-import { Show, SpinitronMetadata } from '@wnyu/spinitron-sdk';
+import { Show, ShowsResponse, SpinitronMetadata } from '@wnyu/spinitron-sdk';
 import { useCallback, useEffect, useState } from 'react';
 import { CurrentData } from './types';
 
@@ -19,6 +19,8 @@ const useWNYUApi = <T>(
   const [response, setResponse] = useState(null);
 
   const fetchData = useCallback(() => {
+    if (!path) return;
+
     setResponse(null);
     const url = new URL(path, API_URL);
     url.search = params.toString();
@@ -55,6 +57,21 @@ const useMetadata = () => useWNYUApi<SpinitronMetadata>('/metadata');
 
 const useUpcoming = () => useWNYUApi<Show[]>('/shows/schedule/upcoming');
 
+const useShow = (showId?: number): [Show | null, () => void] => {
+  const [shows, refreshShows] = useWNYUApi<ShowsResponse>(
+    showId ? '/shows' : '',
+    new URLSearchParams({
+      expand: 'personas',
+      id: showId ? String(showId) : '',
+    }),
+  );
+
+  return [
+    shows?.items.find((show) => show.id === showId) ?? null,
+    refreshShows,
+  ];
+};
+
 const useCurrent = () => useWNYUApi<CurrentData>('/current');
 
-export { useMetadata, useUpcoming, useCurrent };
+export { useMetadata, useUpcoming, useShow, useCurrent };

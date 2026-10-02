@@ -6,12 +6,14 @@ interface SchedulePanelProps {
   shows: Show[];
   playlists?: Playlist[];
   activeShow?: Show;
+  initialDay?: string;
 }
 
 export default function SchedulePanel({
   shows,
   playlists,
   activeShow,
+  initialDay,
 }: SchedulePanelProps) {
   return (
     <>
@@ -19,7 +21,7 @@ export default function SchedulePanel({
       <div className="mx-4 flex flex-col md:hidden">
         {!activeShow && (
           <div className="w-full pt-4">
-            <ScheduleList shows={shows} />
+            <ScheduleList shows={shows} initialDay={initialDay} />
           </div>
         )}
 
@@ -32,8 +34,8 @@ export default function SchedulePanel({
 
       {/* desktop */}
       <div className="hidden flex-row justify-between md:flex md:h-[calc(100dvh-4rem)]">
-        <div className="w-3/5 overflow-y-hidden p-6 pb-0">
-          <ScheduleList shows={shows} />
+        <div className="w-3/5 overflow-y-hidden p-6 pb-0 mb-6">
+          <ScheduleList shows={shows} initialDay={initialDay} />
         </div>
 
         {activeShow && (

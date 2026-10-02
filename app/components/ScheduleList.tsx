@@ -1,18 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getHosts } from '../utils';
 import ListItem from './ListItem';
 import ScheduleSearchBar, { daysOfWeek } from './ScheduleSearchBar';
 import type { Show } from '@wnyu/spinitron-sdk';
 
 interface ScheduleListProps {
   shows: Show[];
+  initialDay?: string;
 }
 
-export default function ScheduleList({ shows }: ScheduleListProps) {
+export default function ScheduleList({ shows, initialDay }: ScheduleListProps) {
   const [filteredShows, setFilteredShows] = useState<Show[]>([]);
   const [dayFilter, setDayFilter] = useState<string>(
-    daysOfWeek[new Date().getDay()],
+    initialDay && daysOfWeek.includes(initialDay)
+      ? initialDay
+      : daysOfWeek[new Date().getDay()],
   );
   const [nameFilter, setNameFilter] = useState<string>('');
   useEffect(() => {
@@ -32,16 +36,6 @@ export default function ScheduleList({ shows }: ScheduleListProps) {
     setFilteredShows(filtered);
   }, [dayFilter, nameFilter, shows]);
 
-  const getHosts = (show: Show) => {
-    let hosts = show.personas?.[0].name ?? 'WNYU DJs';
-    if (show.personas && show.personas.length > 1) {
-      for (let i = 1; i < show.personas.length; i += 1) {
-        hosts += ` & ${show.personas[i].name}`;
-      }
-    }
-    return hosts;
-  };
-
   return (
     <div>
       <ScheduleSearchBar
@@ -53,7 +47,7 @@ export default function ScheduleList({ shows }: ScheduleListProps) {
       <div className="mb-[5.5rem] flex flex-col gap-4 pt-4 md:mb-0 md:ml-12 md:h-[calc(100dvh-8.375rem)] md:overflow-y-scroll md:pb-6 md:pt-0">
         {filteredShows.map((show) => (
           <ListItem
-            url={`/schedule/${show.id}`}
+            url={`/schedule/${show.id}?day=${dayFilter}`}
             host={getHosts(show)}
             title={show.title}
             start={new Date(show.start).toLocaleTimeString('en-US', {

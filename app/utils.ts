@@ -1,4 +1,14 @@
-import type { Playlist, ShowsResponse } from '@wnyu/spinitron-sdk';
+import type { Playlist, Show, ShowsResponse } from '@wnyu/spinitron-sdk';
+
+function getHosts(show: Pick<Show, 'personas'>) {
+  let hosts = show.personas?.[0].name ?? 'WNYU DJs';
+  if (show.personas && show.personas.length > 1) {
+    for (let i = 1; i < show.personas.length; i += 1) {
+      hosts += ` & ${show.personas[i].name}`;
+    }
+  }
+  return hosts;
+}
 
 function trimSpinitronDescriptionString(s: string) {
   try {
@@ -20,7 +30,14 @@ function isPlaylistOnAir(playlist?: Playlist) {
   const start = new Date(playlist.start).getTime();
   const end = new Date(playlist.end).getTime();
 
-  return Number.isFinite(start) && Number.isFinite(end) && now >= start && now < end;
+  return (
+    Number.isFinite(start) && Number.isFinite(end) && now >= start && now < end
+  );
 }
 
-export { trimSpinitronDescriptionString, filterShowByCategory, isPlaylistOnAir };
+export {
+  trimSpinitronDescriptionString,
+  filterShowByCategory,
+  isPlaylistOnAir,
+  getHosts,
+};

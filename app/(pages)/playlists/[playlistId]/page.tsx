@@ -32,7 +32,7 @@ export default async function Page({ params }: { params: PlaylistParams }) {
             </Link>
             <p>{new Date(playlist.start).toDateString()}</p>
           </div>
-          <h1 className="break-words md:pb-4">{playlist.title}</h1>
+          <h1 className="break-words md:pb-4 mt-7 mb-3">{playlist.title}</h1>
           <p className="pt-4">{`hosted by ${persona.name}`}</p>
           <p>
             {new Date(playlist.start).toLocaleTimeString('en-US', {
