@@ -30,20 +30,18 @@ export default function ScheduleSearchBar({
   setNameFilter,
   setDayFilter,
 }: ScheduleSearchBarProps) {
-  const [dayOfWeek, setDayOfWeek] = useState(new Date().getDay());
+  const dayOfWeek = daysOfWeek.indexOf(dayFilter);
   const inputRef = useRef<HTMLInputElement>(null);
   const [searchOpen, setSearchOpen] = useState(false);
 
   const handlePreviousDay = () => {
     const newDay = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-    setDayOfWeek(newDay);
     setDayFilter(daysOfWeek[newDay]);
     setNameFilter('');
   };
 
   const handleNextDay = () => {
     const newDay = (dayOfWeek + 1) % 7;
-    setDayOfWeek(newDay);
     setDayFilter(daysOfWeek[newDay]);
     setNameFilter('');
   };

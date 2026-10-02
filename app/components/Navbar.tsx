@@ -3,10 +3,10 @@
 import { SpinitronMetadata } from '@wnyu/spinitron-sdk';
 import Marquee from 'react-fast-marquee';
 import { useState, useEffect, useContext } from 'react';
-import { useMetadata } from '@/app/client-api';
+import { useShow, useMetadata } from '@/app/client-api';
 import { DropdownToggleContext } from '../providers/ToggleProvider';
 import { CurrentDataContext } from '../providers/CurrentDataProvider';
-import { isPlaylistOnAir } from '../utils';
+import { getHosts, isPlaylistOnAir } from '../utils';
 import DropDownPanel from './DropDownPanel';
 import NavMenu from './NavMenu';
 import Stream from './Stream';
@@ -23,6 +23,7 @@ export default function Navbar({
   const [metadata, setMetadata] = useState<SpinitronMetadata>();
   const context = useContext(DropdownToggleContext);
   const current = useContext(CurrentDataContext);
+  const [show] = useShow(current.playlist?.show_id);
   const isOnAir = isPlaylistOnAir(current.playlist);
 
   const handleClick = () => {
@@ -73,7 +74,7 @@ export default function Navbar({
 
                 <span>
                   {isOnAir
-                    ? `Live Now: ${metadata?.playlist_title ?? current.playlist?.title ?? 'Unknown show'} with ${metadata?.dj ?? 'unhosted'}`
+                    ? `Live Now: ${metadata?.playlist_title ?? current.playlist?.title ?? 'Unknown show'} with ${show?.personas?.length ? getHosts(show) : (metadata?.dj ?? 'unhosted')}`
                     : ' You are listening to the WNYU JUKEBOX. Check out our schedule for upcoming shows! '}
                 </span>
               </Marquee>

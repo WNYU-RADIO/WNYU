@@ -3,7 +3,13 @@
 import { Playlist, SpinitronMetadata } from '@wnyu/spinitron-sdk';
 import Image from 'next/image';
 import Link from 'next/link';
-import { isPlaylistOnAir, trimSpinitronDescriptionString } from '../utils';
+import { useLayoutEffect, useRef, useState } from 'react';
+import { useShow } from '../client-api';
+import {
+  getHosts,
+  isPlaylistOnAir,
+  trimSpinitronDescriptionString,
+} from '../utils';
 
 interface CurrentPlaylistInfoProps {
   playlist?: Playlist;
@@ -16,10 +22,47 @@ export default function CurrentPlaylistInfo({
   metadata,
   dropdown = false,
 }: CurrentPlaylistInfoProps) {
+  const songTitleRef = useRef<HTMLHeadingElement>(null);
+  const [songTitleFontSize, setSongTitleFontSize] = useState(96);
+  const [show] = useShow(playlist?.show_id);
   const isOnAir = isPlaylistOnAir(playlist);
   const currentTitle = isOnAir
     ? (metadata?.playlist_title ?? playlist?.title)
     : (metadata?.playlist_title ?? playlist?.title ?? 'No show played yet');
+  const songTitle = metadata?.song_name ?? '';
+  const hostName = show?.personas?.length
+    ? getHosts(show)
+    : (metadata?.dj ?? 'unhosted');
+  const dropdownHostLabel =
+    hostName === 'unhosted' ? hostName : `hosted by: ${hostName.toUpperCase()}`;
+  const hostLabel =
+    hostName === 'unhosted' ? hostName : `Hosted By: ${hostName}`;
+
+  useLayoutEffect(() => {
+    const titleElement = songTitleRef.current;
+    if (!titleElement) return undefined;
+
+    const fitTitleToLongestWord = () => {
+      let fontSize = 96;
+      titleElement.style.fontSize = `${fontSize}px`;
+
+      while (
+        titleElement.scrollWidth > titleElement.clientWidth &&
+        fontSize > 16
+      ) {
+        fontSize -= 1;
+        titleElement.style.fontSize = `${fontSize}px`;
+      }
+
+      setSongTitleFontSize(fontSize);
+    };
+
+    fitTitleToLongestWord();
+    const resizeObserver = new ResizeObserver(fitTitleToLongestWord);
+    resizeObserver.observe(titleElement);
+
+    return () => resizeObserver.disconnect();
+  }, [songTitle]);
 
   return (
     <>
@@ -34,11 +77,7 @@ export default function CurrentPlaylistInfo({
             />
           )}
           <p className="mt-8 font-bold">{currentTitle}</p>
-          <p className="">
-            {metadata?.dj
-              ? `hosted by: ${metadata.dj.toUpperCase()}`
-              : 'unhosted'}
-          </p>
+          <p className="">{dropdownHostLabel}</p>
           {playlist?.start && playlist?.end && (
             <p>
               {new Date(playlist.start).toLocaleTimeString([], {
@@ -69,9 +108,7 @@ export default function CurrentPlaylistInfo({
                 {currentTitle}
               </Link>
             </h4>
-            <p className="">
-              {metadata?.dj ? `Hosted By: ${metadata.dj}` : 'unhosted'}
-            </p>
+            <p className="">{hostLabel}</p>
           </div>
           {playlist?.image && (
             <div className="group relative mt-4 h-full w-full bg-gray-500 text-white">
@@ -94,9 +131,15 @@ export default function CurrentPlaylistInfo({
                   />
                 )}
               </div>
-              <div className="absolute bottom-4 max-w-full px-4">
-                <h4 className="break-words">{metadata?.song_name}</h4>
-                <p className="break-words">{metadata?.artist_name}</p>
+              <div className="absolute inset-x-0 bottom-4 w-full px-4">
+                <h4
+                  ref={songTitleRef}
+                  className="w-full max-w-full break-normal leading-none"
+                  style={{ fontSize: `${songTitleFontSize}px` }}
+                >
+                  {songTitle}
+                </h4>
+                <p className="break-words leading-none">{metadata?.artist_name}</p>
               </div>
             </div>
           )}

@@ -80,9 +80,6 @@ export default function ArchivePlayer({
     hlsRef.current = hls;
     hls.loadSource(streamUrl);
     hls.attachMedia(audio);
-    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      audio.play().catch(() => undefined);
-    });
     hls.on(Hls.Events.ERROR, (_event, data) => {
       if (data.fatal) setErrorMessage(`${data.type}: ${data.details}`);
     });
