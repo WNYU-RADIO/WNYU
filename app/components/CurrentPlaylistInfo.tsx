@@ -3,7 +3,7 @@
 import { Playlist, SpinitronMetadata } from '@wnyu/spinitron-sdk';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { Textfit } from 'react-textfit';
 import { useShow } from '../client-api';
 import {
   getHosts,
@@ -22,8 +22,6 @@ export default function CurrentPlaylistInfo({
   metadata,
   dropdown = false,
 }: CurrentPlaylistInfoProps) {
-  const songTitleRef = useRef<HTMLHeadingElement>(null);
-  const [songTitleFontSize, setSongTitleFontSize] = useState(96);
   const [show] = useShow(playlist?.show_id);
   const isOnAir = isPlaylistOnAir(playlist);
   const currentTitle = isOnAir
@@ -37,32 +35,6 @@ export default function CurrentPlaylistInfo({
     hostName === 'unhosted' ? hostName : `hosted by: ${hostName.toUpperCase()}`;
   const hostLabel =
     hostName === 'unhosted' ? hostName : `Hosted By: ${hostName}`;
-
-  useLayoutEffect(() => {
-    const titleElement = songTitleRef.current;
-    if (!titleElement) return undefined;
-
-    const fitTitleToLongestWord = () => {
-      let fontSize = 96;
-      titleElement.style.fontSize = `${fontSize}px`;
-
-      while (
-        titleElement.scrollWidth > titleElement.clientWidth &&
-        fontSize > 16
-      ) {
-        fontSize -= 1;
-        titleElement.style.fontSize = `${fontSize}px`;
-      }
-
-      setSongTitleFontSize(fontSize);
-    };
-
-    fitTitleToLongestWord();
-    const resizeObserver = new ResizeObserver(fitTitleToLongestWord);
-    resizeObserver.observe(titleElement);
-
-    return () => resizeObserver.disconnect();
-  }, [songTitle]);
 
   return (
     <>
@@ -111,7 +83,7 @@ export default function CurrentPlaylistInfo({
             <p className="">{hostLabel}</p>
           </div>
           {playlist?.image && (
-            <div className="group relative mt-4 h-full w-full bg-gray-500 text-white">
+            <div className="group relative mt-4 aspect-square w-full bg-gray-500 text-white">
               <div className="min-h-[300px] min-w-[300px]">
                 {metadata?.cover_art_url ? (
                   <Image
@@ -131,15 +103,21 @@ export default function CurrentPlaylistInfo({
                   />
                 )}
               </div>
-              <div className="absolute inset-x-0 bottom-4 w-full px-4">
-                <h4
-                  ref={songTitleRef}
-                  className="w-full max-w-full break-normal leading-none"
-                  style={{ fontSize: `${songTitleFontSize}px` }}
-                >
-                  {songTitle}
-                </h4>
-                <p className="break-words leading-none">{metadata?.artist_name}</p>
+              <div className="absolute inset-x-0 bottom-4 box-border flex h-3/4 w-full flex-col px-4">
+                <div className="min-h-0 w-full flex-1">
+                  <Textfit
+                    mode="multi"
+                    min={8}
+                    max={140}
+                    throttle={50}
+                    className="flex h-full w-full items-end break-words leading-none pb-4"
+                  >
+                    {songTitle}
+                  </Textfit>
+                </div>
+                <p className="w-full shrink-0 break-words text-[clamp(1rem,3vw,1.5rem)] leading-none">
+                  {metadata?.artist_name}
+                </p>
               </div>
             </div>
           )}
