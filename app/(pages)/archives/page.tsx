@@ -14,15 +14,14 @@ export default async function ArchivesPage() {
     <main className="w-full px-4 pb-20 pt-8 md:px-8">
       <header className="mb-3 pb-2 md:pr-[22rem]">
         <h1>Archives</h1>
-        <p className="mt-4 text-sm font-bold uppercase tracking-wide cursor-not-allowed text-gray-400">
+        <p className="mt-4 cursor-not-allowed text-sm font-bold uppercase tracking-wide text-gray-400">
           {/* <a
             href="" /*https://www.libib.com/u/wnyuarchives
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm font-bold uppercase transition-colors hover:text-red-600"
           > */}
-            Open Libib catalog ↗
-          
+          Open Libib catalog ↗
         </p>
       </header>
       <Suspense
