@@ -1,22 +1,11 @@
 import type { Playlist, Show, ShowsResponse } from '@wnyu/spinitron-sdk';
 
 function getHosts(show: Pick<Show, 'personas'>) {
-  let hosts = show.personas?.[0].name ?? 'WNYU DJs';
-  if (show.personas && show.personas.length > 1) {
-    for (let i = 1; i < show.personas.length; i += 1) {
-      hosts += ` & ${show.personas[i].name}`;
-    }
-  }
-  return hosts;
+  return show.personas?.map(({ name }) => name).join(' & ') || 'WNYU DJs';
 }
 
 function trimSpinitronDescriptionString(s: string) {
-  try {
-    const val = s.slice(3, -4);
-    return val;
-  } catch (err) {
-    return '';
-  }
+  return s.slice(3, -4);
 }
 
 function filterShowByCategory(shows: ShowsResponse, category: string) {

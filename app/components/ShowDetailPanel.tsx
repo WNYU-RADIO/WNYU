@@ -7,7 +7,7 @@ interface ShowDetailPanelProps {
   playlists?: Playlist[];
 }
 
-export default async function ShowDetailPanel({
+export default function ShowDetailPanel({
   show,
   playlists,
 }: ShowDetailPanelProps) {
@@ -22,31 +22,17 @@ export default async function ShowDetailPanel({
       <div className="flex flex-col flex-wrap gap-6 pb-6 md:justify-start">
         {playlists &&
           playlists.map((playlist) => (
-            <div key={playlist.id}>
-              {/* mobile */}
-              <Link className="md:hidden" href={`/playlists/${playlist.id}`}>
-                <div className="w-full underline transition-all hover:opacity-50">
-                  {new Date(playlist.start).toLocaleString('en-US', {
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
-                </div>
-              </Link>
-              {/* desktop */}
-              <Link
-                className="hidden md:block"
-                href={`/playlists/${playlist.id}`}
-              >
-                <div className="cursor-pointer underline transition-all hover:opacity-50">
-                  {new Date(playlist.start).toLocaleString('en-US', {
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
-                </div>
-              </Link>
-            </div>
+            <Link
+              key={playlist.id}
+              className="block w-full cursor-pointer underline transition-all hover:opacity-50"
+              href={`/playlists/${playlist.id}`}
+            >
+              {new Date(playlist.start).toLocaleString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+              })}
+            </Link>
           ))}
       </div>
     </div>

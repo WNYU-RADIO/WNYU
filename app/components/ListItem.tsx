@@ -15,19 +15,17 @@ export default function ListItem({
   end,
 }: ListItemProps) {
   return (
-    <>
-      <div className={`cursor-pointer transition-colors hover:text-gray-400`}>
-        <Link href={url ? `${url}` : '/'}>
-          <h4 className="">{title}</h4>
-          <p className="">hosted by {host}</p>
-          {start && end && (
-            <p className="">
-              {start} {' - '}
-              {end}
-            </p>
-          )}
-        </Link>
-      </div>
-    </>
+    <div className="cursor-pointer transition-colors hover:text-gray-400">
+      <Link href={url || '/'}>
+        <h4>{title}</h4>
+        <p>hosted by {host}</p>
+        {start && end && (
+          <p>
+            {start} {' - '}
+            {end}
+          </p>
+        )}
+      </Link>
+    </div>
   );
 }

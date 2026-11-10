@@ -1,4 +1,4 @@
-export default async function SpotifyEmbedList({
+export default function SpotifyEmbedList({
   spotifyEpisodeURLs,
 }: {
   spotifyEpisodeURLs: string[];

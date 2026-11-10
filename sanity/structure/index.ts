@@ -1,4 +1,3 @@
-import type { StructureResolver } from 'sanity/structure';
 import {
   DocumentTextIcon,
   UsersIcon,
@@ -9,6 +8,7 @@ import {
 import { CiMusicNote1 } from 'react-icons/ci';
 import { MdOutlineSportsSoccer, MdOutlinePodcasts } from 'react-icons/md';
 import { IoNewspaperOutline } from 'react-icons/io5';
+import type { StructureResolver } from 'sanity/structure';
 
 export const structure: StructureResolver = (S) =>
   S.list()
@@ -31,6 +31,22 @@ export const structure: StructureResolver = (S) =>
         .title('Podcast')
         .icon(MdOutlinePodcasts),
       S.documentTypeListItem('footer').title('Footer'),
+      S.listItem()
+        .title('Archives')
+        .icon(DocumentTextIcon)
+        .child(
+          S.list()
+            .title('Archive Content')
+            .items([
+              S.documentTypeListItem('collectionHighlight').title(
+                'Collection Highlights',
+              ),
+              S.documentTypeListItem('profile').title('Profiles'),
+              S.documentTypeListItem('archiveNews').title('Archive News'),
+              S.documentTypeListItem('photo').title('Photos'),
+              S.documentTypeListItem('recentBand').title('Recent Bands'),
+            ]),
+        ),
       S.listItem()
         .title('Articles')
         .icon(AddDocumentIcon)

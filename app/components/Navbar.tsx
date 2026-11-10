@@ -1,9 +1,7 @@
 'use client';
 
-import { SpinitronMetadata } from '@wnyu/spinitron-sdk';
 import Marquee from 'react-fast-marquee';
-import { useState, useEffect, useContext } from 'react';
-import { useShow, useMetadata } from '@/app/client-api';
+import { useContext } from 'react';
 import { DropdownToggleContext } from '../providers/ToggleProvider';
 import { CurrentDataContext } from '../providers/CurrentDataProvider';
 import { getHosts, isPlaylistOnAir } from '../utils';
@@ -12,36 +10,20 @@ import NavMenu from './NavMenu';
 import Stream from './Stream';
 import LogoBlock from './LogoBlock';
 
-const REFRESH_STREAM_INTERVAL = 5000;
-
 export default function Navbar({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [metadataResponse, refreshMetadata] = useMetadata();
-  const [metadata, setMetadata] = useState<SpinitronMetadata>();
   const context = useContext(DropdownToggleContext);
   const current = useContext(CurrentDataContext);
-  const [show] = useShow(current.playlist?.show_id);
+  const { metadata } = current;
+  const { show } = current;
   const isOnAir = isPlaylistOnAir(current.playlist);
 
   const handleClick = () => {
     context?.setToggle(!context?.toggle);
   };
-
-  useEffect(() => {
-    if (metadataResponse) {
-      setMetadata(metadataResponse);
-    }
-    const intervalId = setInterval(() => {
-      refreshMetadata();
-    }, REFRESH_STREAM_INTERVAL);
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [metadataResponse, refreshMetadata]);
 
   return (
     <>
@@ -74,7 +56,7 @@ export default function Navbar({
 
                 <span>
                   {isOnAir
-                    ? `Live Now: ${metadata?.playlist_title ?? current.playlist?.title ?? 'Unknown show'} with ${show?.personas?.length ? getHosts(show) : (metadata?.dj ?? 'unhosted')}`
+                    ? `Live Now: ${show?.title ?? metadata?.playlist_title ?? current.playlist?.title ?? 'Unknown show'} with ${show?.personas?.length ? getHosts(show) : (metadata?.dj ?? 'unhosted')}`
                     : ' You are listening to the WNYU JUKEBOX. Check out our schedule for upcoming shows! '}
                 </span>
               </Marquee>

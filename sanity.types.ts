@@ -208,12 +208,6 @@ export type Article = {
   priority?: number;
 };
 
-export type Slug = {
-  _type: 'slug';
-  current?: string;
-  source?: string;
-};
-
 export type VideoCard = {
   _id: string;
   _type: 'videoCard';
@@ -222,6 +216,165 @@ export type VideoCard = {
   _rev: string;
   name?: string;
   videoLink?: string;
+};
+
+export type RecentBand = {
+  _id: string;
+  _type: 'recentBand';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: 'image';
+  };
+};
+
+export type Photo = {
+  _id: string;
+  _type: 'photo';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  callNumber?: string;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: 'image';
+  };
+};
+
+export type ArchiveNews = {
+  _id: string;
+  _type: 'archiveNews';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  headline?: string;
+  slug?: Slug;
+  publicationDate?: string;
+  description?: string;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: 'image';
+  };
+};
+
+export type Profile = {
+  _id: string;
+  _type: 'profile';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  subject?: string;
+  slug?: Slug;
+  writer?: string;
+  publicationDate?: string;
+  description?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: 'span';
+      _key: string;
+    }>;
+    style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote';
+    listItem?: 'bullet' | 'number';
+    markDefs?: Array<{
+      href?: string;
+      _type: 'link';
+      _key: string;
+    }>;
+    level?: number;
+    _type: 'block';
+    _key: string;
+  }>;
+  images?: Array<{
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: 'image';
+    _key: string;
+  }>;
+};
+
+export type CollectionHighlight = {
+  _id: string;
+  _type: 'collectionHighlight';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  subject?: string;
+  slug?: Slug;
+  writer?: string;
+  publicationDate?: string;
+  description?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: 'span';
+      _key: string;
+    }>;
+    style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote';
+    listItem?: 'bullet' | 'number';
+    markDefs?: Array<{
+      href?: string;
+      _type: 'link';
+      _key: string;
+    }>;
+    level?: number;
+    _type: 'block';
+    _key: string;
+  }>;
+  images?: Array<{
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: 'image';
+    _key: string;
+  }>;
+};
+
+export type Slug = {
+  _type: 'slug';
+  current?: string;
+  source?: string;
 };
 
 export type Announcement = {
@@ -362,8 +515,13 @@ export type AllSanitySchemaTypes =
   | Footer
   | Podcast
   | Article
-  | Slug
   | VideoCard
+  | RecentBand
+  | Photo
+  | ArchiveNews
+  | Profile
+  | CollectionHighlight
+  | Slug
   | Announcement
   | ManagementCard
   | SanityImageCrop
@@ -393,25 +551,6 @@ export type MANAGEMENT_CARDS_QUERYResult = Array<{
     _type: 'image';
   } | null;
 }>;
-// Variable: MANAGEMENT_CARD_QUERY
-// Query: *[_type=="managementCard"][0]{'id':_id,name,role,email,picture}
-export type MANAGEMENT_CARD_QUERYResult = {
-  id: string;
-  name: string | null;
-  role: string | null;
-  email: string | null;
-  picture: {
-    asset?: {
-      _ref: string;
-      _type: 'reference';
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-    };
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: 'image';
-  } | null;
-} | null;
 // Variable: ABOUT_TEXT_QUERY
 // Query: *[_type=="textBlock" && name=="About"][0]{content}
 export type ABOUT_TEXT_QUERYResult = {
@@ -435,8 +574,9 @@ export type ABOUT_TEXT_QUERYResult = {
   }> | null;
 } | null;
 // Variable: ANNOUNCEMENTS_QUERY
-// Query: *[_type=="announcement"]|order(_createdAt desc){title,subtitle,announcementImage,link}
+// Query: *[_type=="announcement"]|order(_createdAt desc){'id':_id,title,subtitle,announcementImage,link}
 export type ANNOUNCEMENTS_QUERYResult = Array<{
+  id: string;
   title: string | null;
   subtitle: string | null;
   announcementImage: {
@@ -452,36 +592,186 @@ export type ANNOUNCEMENTS_QUERYResult = Array<{
   } | null;
   link: string | null;
 }>;
-// Variable: ANNOUNCEMENT_QUERY
-// Query: *[_type=="announcement"][0]{title,subtitle,announcementImage,link}
-export type ANNOUNCEMENT_QUERYResult = {
-  title: string | null;
-  subtitle: string | null;
-  announcementImage: {
-    asset?: {
-      _ref: string;
-      _type: 'reference';
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-    };
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: 'image';
-  } | null;
-  link: string | null;
-} | null;
+// Variable: ARCHIVE_ITEMS_QUERY
+// Query: *[    _type in ["collectionHighlight", "profile", "archiveNews", "photo"] &&    defined(slug.current) &&    select(      _type in ["collectionHighlight", "profile"] => defined(images[0].asset),      _type in ["archiveNews", "photo"] => defined(image.asset),      false    )  ] | order(coalesce(publicationDate, _createdAt) desc) {    "id": _id,    "slug": coalesce(slug.current, ""),    "title": select(      _type == "collectionHighlight" => coalesce(subject, "Untitled"),      _type == "profile" => coalesce(subject, "Untitled"),      _type == "archiveNews" => coalesce(headline, "Untitled"),      _type == "photo" => coalesce(title, "Untitled"),      "Untitled"    ),    "date": coalesce(publicationDate, ""),    "category": select(      _type == "collectionHighlight" => "Collection Highlights",      _type == "profile" => "Profiles",      _type == "archiveNews" => "News",      _type == "photo" => "Photos"    ),    "imageUrl": select(      _type in ["collectionHighlight", "profile"] => coalesce(images[0].asset->url, "/placeholder.png"),      coalesce(image.asset->url, "/placeholder.png")    ),    "imageAlt": select(      _type in ["collectionHighlight", "profile"] => coalesce(images[0].alt, subject, "Archive image"),      coalesce(image.alt, title, headline, "Archive image")    ),    "callNumber": select(      _type == "photo" => coalesce(callNumber, title, ""),      null    ),    "gridSize": select(      _type == "collectionHighlight" => "featured",      "standard"    )  }
+export type ARCHIVE_ITEMS_QUERYResult = Array<
+  | {
+      id: string;
+      slug: string | '';
+      title: string | 'Untitled';
+      date: string | '';
+      category: 'Collection Highlights';
+      imageUrl: string | '/placeholder.png';
+      imageAlt: string | 'Archive image';
+      callNumber: null;
+      gridSize: 'featured';
+    }
+  | {
+      id: string;
+      slug: string | '';
+      title: string | 'Untitled';
+      date: string | '';
+      category: 'News';
+      imageUrl: string | '/placeholder.png';
+      imageAlt: string | 'Archive image';
+      callNumber: null;
+      gridSize: 'standard';
+    }
+  | {
+      id: string;
+      slug: string | '';
+      title: string | 'Untitled';
+      date: string | '';
+      category: 'Profiles';
+      imageUrl: string | '/placeholder.png';
+      imageAlt: string | 'Archive image';
+      callNumber: null;
+      gridSize: 'standard';
+    }
+  | {
+      id: string;
+      slug: string | '';
+      title: string | 'Untitled';
+      date: '';
+      category: 'Photos';
+      imageUrl: string | '/placeholder.png';
+      imageAlt: string | 'Archive image';
+      callNumber: string | '';
+      gridSize: 'standard';
+    }
+>;
+// Variable: HOME_RECENT_BANDS_QUERY
+// Query: *[    _type == "recentBand" &&    defined(image.asset)  ]  | order(_createdAt desc)[0...7] {    "id": _id,    "imageUrl": coalesce(image.asset->url, "/placeholder.png"),    "imageAlt": coalesce(image.alt, "Recent band photo")  }
+export type HOME_RECENT_BANDS_QUERYResult = Array<{
+  id: string;
+  imageUrl: string | '/placeholder.png';
+  imageAlt: string | 'Recent band photo';
+}>;
+// Variable: ARCHIVE_BY_SLUG_QUERY
+// Query: *[    _type in ["collectionHighlight", "profile", "archiveNews", "photo"] &&    slug.current == $slug &&    defined(slug.current)  ][0] {    "documentType": _type,    "title": select(      _type == "collectionHighlight" => coalesce(subject, "Untitled"),      _type == "profile" => coalesce(subject, "Untitled"),      _type == "archiveNews" => coalesce(headline, "Untitled"),      _type == "photo" => coalesce(title, "Untitled"),      "Untitled"    ),    "date": coalesce(publicationDate, ""),    "category": select(      _type == "collectionHighlight" => "Collection Highlights",      _type == "profile" => "Profiles",      _type == "archiveNews" => "News",      _type == "photo" => "Photos"    ),    "writer": select(      _type in ["collectionHighlight", "profile"] => writer,      null    ),    "portableDescription": select(      _type in ["collectionHighlight", "profile"] => description,      null    ),    "textDescription": select(      _type == "archiveNews" => description,      null    ),    "callNumber": select(      _type == "photo" => coalesce(callNumber, title, ""),      null    ),    "images": select(      _type in ["collectionHighlight", "profile"] => coalesce(        images[defined(asset)]{          "url": coalesce(asset->url, "/placeholder.png"),          "alt": coalesce(alt, ^.subject, "Archive image")        },        []      ),      _type in ["archiveNews", "photo"] => [{        "url": coalesce(image.asset->url, "/placeholder.png"),        "alt": coalesce(image.alt, select(          _type == "archiveNews" => headline,          title        ), "Archive image")      }],      []    )  }
+export type ARCHIVE_BY_SLUG_QUERYResult =
+  | {
+      documentType: 'collectionHighlight';
+      title: string | 'Untitled';
+      date: string | '';
+      category: 'Collection Highlights';
+      writer: string | null;
+      portableDescription: Array<{
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: 'span';
+          _key: string;
+        }>;
+        style?:
+          | 'blockquote'
+          | 'h1'
+          | 'h2'
+          | 'h3'
+          | 'h4'
+          | 'h5'
+          | 'h6'
+          | 'normal';
+        listItem?: 'bullet' | 'number';
+        markDefs?: Array<{
+          href?: string;
+          _type: 'link';
+          _key: string;
+        }>;
+        level?: number;
+        _type: 'block';
+        _key: string;
+      }> | null;
+      textDescription: null;
+      callNumber: null;
+      images:
+        | Array<{
+            url: string | '/placeholder.png';
+            alt: string | 'Archive image';
+          }>
+        | Array<never>;
+    }
+  | {
+      documentType: 'archiveNews';
+      title: string | 'Untitled';
+      date: string | '';
+      category: 'News';
+      writer: null;
+      portableDescription: null;
+      textDescription: string | null;
+      callNumber: null;
+      images:
+        | Array<{
+            url: string | '/placeholder.png';
+            alt: string | 'Archive image';
+          }>
+        | Array<never>;
+    }
+  | {
+      documentType: 'profile';
+      title: string | 'Untitled';
+      date: string | '';
+      category: 'Profiles';
+      writer: string | null;
+      portableDescription: Array<{
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: 'span';
+          _key: string;
+        }>;
+        style?:
+          | 'blockquote'
+          | 'h1'
+          | 'h2'
+          | 'h3'
+          | 'h4'
+          | 'h5'
+          | 'h6'
+          | 'normal';
+        listItem?: 'bullet' | 'number';
+        markDefs?: Array<{
+          href?: string;
+          _type: 'link';
+          _key: string;
+        }>;
+        level?: number;
+        _type: 'block';
+        _key: string;
+      }> | null;
+      textDescription: null;
+      callNumber: null;
+      images:
+        | Array<{
+            url: string | '/placeholder.png';
+            alt: string | 'Archive image';
+          }>
+        | Array<never>;
+    }
+  | {
+      documentType: 'photo';
+      title: string | 'Untitled';
+      date: '';
+      category: 'Photos';
+      writer: null;
+      portableDescription: null;
+      textDescription: null;
+      callNumber: string | '';
+      images:
+        | Array<{
+            url: string | '/placeholder.png';
+            alt: string | 'Archive image';
+          }>
+        | Array<never>;
+    }
+  | null;
 // Variable: VIDEO_CARDS_QUERY
-// Query: *[_type=="videoCard"]|order(_createdAt desc){name,videoLink}
+// Query: *[_type=="videoCard"]|order(_createdAt desc){'id':_id,name,videoLink}
 export type VIDEO_CARDS_QUERYResult = Array<{
+  id: string;
   name: string | null;
   videoLink: string | null;
 }>;
-// Variable: VIDEO_CARD_QUERY
-// Query: *[_type=="videoCard"][0]{name,videoLink}
-export type VIDEO_CARD_QUERYResult = {
-  name: string | null;
-  videoLink: string | null;
-} | null;
 // Variable: ARTICLES_QUERY
 // Query: *[_type == "article"]  | order(_createdAt desc) | order(priority asc){    'id': _id,    name,    slug,    author,    date,    picture,    content,    articleType  }
 export type ARTICLES_QUERYResult = Array<{
@@ -521,9 +811,48 @@ export type ARTICLES_QUERYResult = Array<{
   }> | null;
   articleType: 'music' | 'news' | 'sports' | null;
 }>;
-// Variable: ARTICLE_QUERY
-// Query: *[_type == "article"][0]{    'id': _id,    name,    slug,    author,    date,    picture,    content,    articleType  }
-export type ARTICLE_QUERYResult = {
+// Variable: ARTICLES_BY_TYPE_QUERY
+// Query: *[_type == "article" && articleType == $type]  | order(_createdAt desc) | order(priority asc) {    'id': _id,    name,    slug,    author,    date,    picture,    content,    articleType  }
+export type ARTICLES_BY_TYPE_QUERYResult = Array<{
+  id: string;
+  name: string | null;
+  slug: Slug | null;
+  author: string | null;
+  date: string | null;
+  picture: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: 'image';
+  } | null;
+  content: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: 'span';
+      _key: string;
+    }>;
+    style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal';
+    listItem?: 'bullet' | 'number';
+    markDefs?: Array<{
+      href?: string;
+      _type: 'link';
+      _key: string;
+    }>;
+    level?: number;
+    _type: 'block';
+    _key: string;
+  }> | null;
+  articleType: 'music' | 'news' | 'sports' | null;
+}>;
+// Variable: ARTICLE_BY_SLUG_QUERY
+// Query: *[_type == "article" && slug.current == $slug][0]{    'id': _id,    name,    slug,    author,    date,    picture,    content,    articleType  }
+export type ARTICLE_BY_SLUG_QUERYResult = {
   id: string;
   name: string | null;
   slug: Slug | null;
@@ -599,9 +928,48 @@ export type PODCASTS_QUERYResult = Array<{
     _key: string;
   }> | null;
 }>;
-// Variable: PODCAST_QUERY
-// Query: *[_type == "podcast"][0]{    'id': _id,    name,    slug,    host,    picture,    spotifyEpisodeURLs,    department,    description  }
-export type PODCAST_QUERYResult = {
+// Variable: PODCASTS_BY_DEPARTMENT_QUERY
+// Query: *[_type == "podcast" && department == $department]  | order(_createdAt desc) {     'id': _id,    name,    slug,    host,    picture,    spotifyEpisodeURLs,    department,    description  }
+export type PODCASTS_BY_DEPARTMENT_QUERYResult = Array<{
+  id: string;
+  name: string | null;
+  slug: Slug | null;
+  host: string | null;
+  picture: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: 'image';
+  } | null;
+  spotifyEpisodeURLs: Array<string> | null;
+  department: 'news' | 'sports' | null;
+  description: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: 'span';
+      _key: string;
+    }>;
+    style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal';
+    listItem?: 'bullet' | 'number';
+    markDefs?: Array<{
+      href?: string;
+      _type: 'link';
+      _key: string;
+    }>;
+    level?: number;
+    _type: 'block';
+    _key: string;
+  }> | null;
+}>;
+// Variable: PODCAST_BY_SLUG_QUERY
+// Query: *[_type == "podcast" && slug.current == $slug][0]{     'id': _id,    name,    slug,    host,    picture,    spotifyEpisodeURLs,    department,    description  }
+export type PODCAST_BY_SLUG_QUERYResult = {
   id: string;
   name: string | null;
   slug: Slug | null;
@@ -695,16 +1063,18 @@ import '@sanity/client';
 declare module '@sanity/client' {
   interface SanityQueries {
     '*[_type=="managementCard"]|order(priority asc){\'id\':_id,name,role,email,picture}': MANAGEMENT_CARDS_QUERYResult;
-    '*[_type=="managementCard"][0]{\'id\':_id,name,role,email,picture}': MANAGEMENT_CARD_QUERYResult;
     '*[_type=="textBlock" && name=="About"][0]{content}': ABOUT_TEXT_QUERYResult;
-    '*[_type=="announcement"]|order(_createdAt desc){title,subtitle,announcementImage,link}': ANNOUNCEMENTS_QUERYResult;
-    '*[_type=="announcement"][0]{title,subtitle,announcementImage,link}': ANNOUNCEMENT_QUERYResult;
-    '*[_type=="videoCard"]|order(_createdAt desc){name,videoLink}': VIDEO_CARDS_QUERYResult;
-    '*[_type=="videoCard"][0]{name,videoLink}': VIDEO_CARD_QUERYResult;
+    '*[_type=="announcement"]|order(_createdAt desc){\'id\':_id,title,subtitle,announcementImage,link}': ANNOUNCEMENTS_QUERYResult;
+    '\n  *[\n    _type in ["collectionHighlight", "profile", "archiveNews", "photo"] &&\n    defined(slug.current) &&\n    select(\n      _type in ["collectionHighlight", "profile"] => defined(images[0].asset),\n      _type in ["archiveNews", "photo"] => defined(image.asset),\n      false\n    )\n  ] | order(coalesce(publicationDate, _createdAt) desc) {\n    "id": _id,\n    "slug": coalesce(slug.current, ""),\n    "title": select(\n      _type == "collectionHighlight" => coalesce(subject, "Untitled"),\n      _type == "profile" => coalesce(subject, "Untitled"),\n      _type == "archiveNews" => coalesce(headline, "Untitled"),\n      _type == "photo" => coalesce(title, "Untitled"),\n      "Untitled"\n    ),\n    "date": coalesce(publicationDate, ""),\n    "category": select(\n      _type == "collectionHighlight" => "Collection Highlights",\n      _type == "profile" => "Profiles",\n      _type == "archiveNews" => "News",\n      _type == "photo" => "Photos"\n    ),\n    "imageUrl": select(\n      _type in ["collectionHighlight", "profile"] => coalesce(images[0].asset->url, "/placeholder.png"),\n      coalesce(image.asset->url, "/placeholder.png")\n    ),\n    "imageAlt": select(\n      _type in ["collectionHighlight", "profile"] => coalesce(images[0].alt, subject, "Archive image"),\n      coalesce(image.alt, title, headline, "Archive image")\n    ),\n    "callNumber": select(\n      _type == "photo" => coalesce(callNumber, title, ""),\n      null\n    ),\n    "gridSize": select(\n      _type == "collectionHighlight" => "featured",\n      "standard"\n    )\n  }\n': ARCHIVE_ITEMS_QUERYResult;
+    '\n  *[\n    _type == "recentBand" &&\n    defined(image.asset)\n  ]\n  | order(_createdAt desc)[0...7] {\n    "id": _id,\n    "imageUrl": coalesce(image.asset->url, "/placeholder.png"),\n    "imageAlt": coalesce(image.alt, "Recent band photo")\n  }\n': HOME_RECENT_BANDS_QUERYResult;
+    '\n  *[\n    _type in ["collectionHighlight", "profile", "archiveNews", "photo"] &&\n    slug.current == $slug &&\n    defined(slug.current)\n  ][0] {\n    "documentType": _type,\n    "title": select(\n      _type == "collectionHighlight" => coalesce(subject, "Untitled"),\n      _type == "profile" => coalesce(subject, "Untitled"),\n      _type == "archiveNews" => coalesce(headline, "Untitled"),\n      _type == "photo" => coalesce(title, "Untitled"),\n      "Untitled"\n    ),\n    "date": coalesce(publicationDate, ""),\n    "category": select(\n      _type == "collectionHighlight" => "Collection Highlights",\n      _type == "profile" => "Profiles",\n      _type == "archiveNews" => "News",\n      _type == "photo" => "Photos"\n    ),\n    "writer": select(\n      _type in ["collectionHighlight", "profile"] => writer,\n      null\n    ),\n    "portableDescription": select(\n      _type in ["collectionHighlight", "profile"] => description,\n      null\n    ),\n    "textDescription": select(\n      _type == "archiveNews" => description,\n      null\n    ),\n    "callNumber": select(\n      _type == "photo" => coalesce(callNumber, title, ""),\n      null\n    ),\n    "images": select(\n      _type in ["collectionHighlight", "profile"] => coalesce(\n        images[defined(asset)]{\n          "url": coalesce(asset->url, "/placeholder.png"),\n          "alt": coalesce(alt, ^.subject, "Archive image")\n        },\n        []\n      ),\n      _type in ["archiveNews", "photo"] => [{\n        "url": coalesce(image.asset->url, "/placeholder.png"),\n        "alt": coalesce(image.alt, select(\n          _type == "archiveNews" => headline,\n          title\n        ), "Archive image")\n      }],\n      []\n    )\n  }\n': ARCHIVE_BY_SLUG_QUERYResult;
+    '*[_type=="videoCard"]|order(_createdAt desc){\'id\':_id,name,videoLink}': VIDEO_CARDS_QUERYResult;
     '\n  *[_type == "article"]\n  | order(_createdAt desc) | order(priority asc){\n    \'id\': _id,\n    name,\n    slug,\n    author,\n    date,\n    picture,\n    content,\n    articleType\n  }\n': ARTICLES_QUERYResult;
-    '\n  *[_type == "article"][0]{\n    \'id\': _id,\n    name,\n    slug,\n    author,\n    date,\n    picture,\n    content,\n    articleType\n  }\n': ARTICLE_QUERYResult;
+    '\n  *[_type == "article" && articleType == $type]\n  | order(_createdAt desc) | order(priority asc) {\n    \'id\': _id,\n    name,\n    slug,\n    author,\n    date,\n    picture,\n    content,\n    articleType\n  }\n': ARTICLES_BY_TYPE_QUERYResult;
+    '\n  *[_type == "article" && slug.current == $slug][0]{\n    \'id\': _id,\n    name,\n    slug,\n    author,\n    date,\n    picture,\n    content,\n    articleType\n  }\n': ARTICLE_BY_SLUG_QUERYResult;
     '\n  *[_type == "podcast"]| order(_createdAt desc){\n    \'id\': _id,\n    name,\n    slug,\n    host,\n    picture,\n    spotifyEpisodeURLs,\n    department,\n    description\n  }\n': PODCASTS_QUERYResult;
-    '\n  *[_type == "podcast"][0]{\n    \'id\': _id,\n    name,\n    slug,\n    host,\n    picture,\n    spotifyEpisodeURLs,\n    department,\n    description\n  }\n': PODCAST_QUERYResult;
+    '\n  *[_type == "podcast" && department == $department]\n  | order(_createdAt desc) {\n     \'id\': _id,\n    name,\n    slug,\n    host,\n    picture,\n    spotifyEpisodeURLs,\n    department,\n    description\n  }\n': PODCASTS_BY_DEPARTMENT_QUERYResult;
+    '\n  *[_type == "podcast" && slug.current == $slug][0]{\n     \'id\': _id,\n    name,\n    slug,\n    host,\n    picture,\n    spotifyEpisodeURLs,\n    department,\n    description\n  }\n': PODCAST_BY_SLUG_QUERYResult;
     '\n  *[_type == "footer"][0]{\n    \'id\': _id,\n    blockText,\n    footerImage,\n    socials\n  }\n': FOOTER_QUERYResult;
   }
 }

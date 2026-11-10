@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef, useContext } from 'react';
 import { PlayIcon, PauseIcon } from '@heroicons/react/24/solid';
+import { useContext, useRef, useState } from 'react';
 import { DropdownToggleContext } from '../providers/ToggleProvider';
 
 export default function Stream() {
@@ -10,21 +10,14 @@ export default function Stream() {
   const context = useContext(DropdownToggleContext);
 
   const handleClick = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        setIsPlaying(false);
-        audioRef.current.pause();
-      } else {
-        setIsPlaying(true);
-        audioRef.current.src = process.env.NEXT_PUBLIC_STREAM_URL as string;
-        audioRef.current
-          .play()
-          .then(() => {})
-          .catch(() => {});
-      }
+    const audio = audioRef.current;
+    if (audio) {
+      if (audio.paused) audio.play().catch(() => setIsPlaying(false));
+      else audio.pause();
     }
+
     if (context?.toggle === false) {
-      context?.setToggle(true);
+      context.setToggle(true);
     }
   };
 
@@ -44,6 +37,8 @@ export default function Stream() {
       <audio
         ref={audioRef}
         src={process.env.NEXT_PUBLIC_STREAM_URL as string}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
       />
     </div>
   );

@@ -1,19 +1,32 @@
 import type { ShowsResponse } from '@wnyu/spinitron-sdk';
 
-async function getShows(): Promise<ShowsResponse> {
-  const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/shows`);
-  const params = new URLSearchParams({
-    expand: 'personas',
-  });
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE_URL = API_URL?.endsWith('/') ? API_URL : `${API_URL}/`;
+const API_REVALIDATE_SECONDS = 60 * 60;
+
+async function fetchWnyu<T>(
+  path: string,
+  params = new URLSearchParams(),
+): Promise<T> {
+  const url = new URL(path, API_BASE_URL);
   url.search = params.toString();
-  const res = await fetch(url.toString());
+  const res = await fetch(url, {
+    cache: 'default',
+    next: { revalidate: API_REVALIDATE_SECONDS },
+  });
 
   if (!res.ok) {
-    throw new Error('Failed to fetch schedule');
+    throw new Error(`WNYU API request failed: ${res.status} ${res.statusText}`);
   }
-  const output = res.json() as Promise<ShowsResponse>;
 
-  return output;
+  return res.json() as Promise<T>;
 }
 
-export { getShows };
+function getShows() {
+  return fetchWnyu<ShowsResponse>(
+    'shows',
+    new URLSearchParams({ expand: 'personas' }),
+  );
+}
+
+export { fetchWnyu, getShows };

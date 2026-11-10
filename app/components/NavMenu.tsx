@@ -1,24 +1,48 @@
 'use client';
 
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { EllipsisVerticalIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  ChevronDownIcon,
+  EllipsisVerticalIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/solid';
 import { DropdownToggleContext } from '../providers/ToggleProvider';
 
 export default function NavMenu() {
   const context = useContext(DropdownToggleContext);
   const [toggleMenu, setToggleMenu] = useState(false);
+  const [departmentsOpen, setDepartmentsOpen] = useState(false);
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (!(event.target instanceof Element)) return;
+      if (!event.target.closest('[data-departments-menu]')) {
+        setDepartmentsOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, []);
 
   const handleClick = () => {
     setToggleMenu((prev) => !prev);
+    setDepartmentsOpen(false);
     context?.setToggle(false);
   };
 
   const handleClose = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.stopPropagation();
     setToggleMenu(false);
+    setDepartmentsOpen(false);
     context?.setToggle(false);
+  };
+
+  const handleDepartmentsClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setDepartmentsOpen((prev) => !prev);
   };
 
   const close = (e: React.MouseEvent<SVGSVGElement>) => {
@@ -55,13 +79,43 @@ export default function NavMenu() {
             <Link href="https://staticmag.org" onClick={handleClose}>
               static
             </Link>
-            {/* <Link href="/podcasts" onClick={handleClose}>
-              podcasts
-            </Link>
-            <Link href="/sports" onClick={handleClose}>
-              sports
-            </Link>
-             */}
+            <div data-departments-menu>
+              <button
+                type="button"
+                onClick={handleDepartmentsClick}
+                aria-expanded={departmentsOpen}
+                className="flex items-center gap-2 text-left"
+              >
+                departments
+                <ChevronDownIcon
+                  className={`size-6 transition-transform duration-200 ${
+                    departmentsOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+              <AnimatePresence initial={false}>
+                {departmentsOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0, y: -8 }}
+                    animate={{ height: 'auto', opacity: 1, y: 0 }}
+                    exit={{ height: 0, opacity: 0, y: -8 }}
+                    transition={{ duration: 0.2, ease: 'easeOut' }}
+                    className="ml-6 mt-6 flex flex-col gap-3 overflow-hidden border-l-2 border-red-500 pl-4 text-2xl text-gray-400"
+                  >
+                    <span className="cursor-not-allowed">podcasts</span>
+                    <span className="cursor-not-allowed">sports</span>
+                    <Link
+                      href="/archives"
+                      prefetch={false}
+                      onClick={handleClose}
+                      className="text-white transition-colors hover:text-red-500"
+                    >
+                      archives
+                    </Link>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
           <XMarkIcon
             className="z-100 absolute right-0 top-0 size-14 text-white"
@@ -92,11 +146,53 @@ export default function NavMenu() {
         >
           STATIC
         </Link>
-        <div className="cursor-not-allowed text-gray-400 transition-colors ease-in-out">
-          PODCASTS
-        </div>
-        <div className="cursor-not-allowed text-gray-400 transition-colors ease-in-out">
-          SPORTS
+        <div
+          className="relative"
+          data-departments-menu
+          onMouseEnter={() => setDepartmentsOpen(true)}
+          onMouseLeave={() => setDepartmentsOpen(false)}
+        >
+          <button
+            type="button"
+            onClick={handleDepartmentsClick}
+            aria-expanded={departmentsOpen}
+            className={`flex items-center gap-1 transition-colors ease-in-out hover:text-red-600 ${
+              departmentsOpen ? 'text-red-600' : ''
+            }`}
+          >
+            DEPARTMENTS
+            <ChevronDownIcon
+              className={`size-5 transition-transform duration-200 ${
+                departmentsOpen ? 'rotate-180' : ''
+              }`}
+            />
+          </button>
+          <AnimatePresence initial={false}>
+            {departmentsOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -8, scaleY: 0.85 }}
+                animate={{ opacity: 1, y: 0, scaleY: 1 }}
+                exit={{ opacity: 0, y: -8, scaleY: 0.85 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                className="absolute right-0 top-full mt-3 flex w-full origin-top flex-col gap-2 border-2 border-t-4 border-black border-t-red-500 bg-white p-3 text-left text-xl shadow-[4px_4px_0px_#000]"
+              >
+                <span className="cursor-not-allowed border-b border-gray-200 pb-2 text-gray-400">
+                  PODCASTS
+                </span>
+                <span className="cursor-not-allowed border-b border-gray-200 pb-2 text-gray-400">
+                  SPORTS
+                </span>
+                <Link
+                  href="/archives"
+                  prefetch={false}
+                  onClick={handleClose}
+                  className="transition-colors hover:text-red-600"
+                >
+                  ARCHIVES
+                </Link>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </>

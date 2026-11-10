@@ -1,8 +1,6 @@
 import { sanityFetch } from '@/sanity/lib/client';
 import {
-  ARTICLE_TYPES,
   ARTICLES_BY_TYPE_QUERY,
-  PODCAST_DEPARTMENTS,
   PODCASTS_BY_DEPARTMENT_QUERY,
 } from '@/sanity/lib/queries';
 import { ARTICLES_QUERYResult, PODCASTS_QUERYResult } from '@/sanity.types';
@@ -12,17 +10,19 @@ import ArticlesGroup from '@/app/components/ArticlesGroup';
 import ShowsSidePanel from '@/app/components/ShowsSidePanel';
 
 export default async function Page() {
-  const sportsArticles = await sanityFetch<ARTICLES_QUERYResult>({
-    query: ARTICLES_BY_TYPE_QUERY(ARTICLE_TYPES.SPORTS),
-    tags: ['article'],
-  });
-
-  const sportsPodcasts = await sanityFetch<PODCASTS_QUERYResult>({
-    query: PODCASTS_BY_DEPARTMENT_QUERY(PODCAST_DEPARTMENTS.SPORTS),
-    tags: ['podcasts'],
-  });
-
-  const shows = await getShows();
+  const [sportsArticles, sportsPodcasts, shows] = await Promise.all([
+    sanityFetch<ARTICLES_QUERYResult>({
+      query: ARTICLES_BY_TYPE_QUERY,
+      params: { type: 'sports' },
+      tags: ['article'],
+    }),
+    sanityFetch<PODCASTS_QUERYResult>({
+      query: PODCASTS_BY_DEPARTMENT_QUERY,
+      params: { department: 'sports' },
+      tags: ['podcast'],
+    }),
+    getShows(),
+  ]);
 
   const sportsShows = filterShowByCategory(shows, 'Sports');
 

@@ -1,26 +1,24 @@
 import { ChevronLeftIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
+import ArchivePlayer from '@/app/components/ArchivePlayer';
+import { fetchWnyu } from '@/app/server-api';
 import { trimSpinitronDescriptionString } from '@/app/utils';
-import ArchivePlayer from '../../../components/ArchivePlayer';
 import type { Persona, Playlist, SpinsResponse } from '@wnyu/spinitron-sdk';
 
 type PlaylistParams = Promise<{ playlistId: string }>;
 
 export default async function Page({ params }: { params: PlaylistParams }) {
   const { playlistId } = await params;
+  const encodedPlaylistId = encodeURIComponent(playlistId);
 
-  const playlist = (await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/playlists/${playlistId}`,
-    { cache: 'default', next: { revalidate: 3600 } },
-  ).then((res) => res.json())) as Playlist;
-  const spins: SpinsResponse = (await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/spins?playlist_id=${playlistId}&count=100`,
-    { cache: 'default', next: { revalidate: 3600 } },
-  ).then((res) => res.json())) as SpinsResponse;
-  const persona: Persona = (await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/personas/${playlist.persona_id}`,
-    { cache: 'default', next: { revalidate: 3600 } },
-  ).then((res) => res.json())) as Persona;
+  const [playlist, spins] = await Promise.all([
+    fetchWnyu<Playlist>(`playlists/${encodedPlaylistId}`),
+    fetchWnyu<SpinsResponse>(
+      'spins',
+      new URLSearchParams({ playlist_id: playlistId, count: '100' }),
+    ),
+  ]);
+  const persona = await fetchWnyu<Persona>(`personas/${playlist.persona_id}`);
 
   return (
     <div className="pt-4 md:flex md:items-start">
@@ -32,7 +30,7 @@ export default async function Page({ params }: { params: PlaylistParams }) {
             </Link>
             <p>{new Date(playlist.start).toDateString()}</p>
           </div>
-          <h1 className="break-words md:pb-4 mt-7 mb-3">{playlist.title}</h1>
+          <h1 className="mb-3 mt-7 break-words md:pb-4">{playlist.title}</h1>
           <p className="pt-4">{`hosted by ${persona.name}`}</p>
           <p>
             {new Date(playlist.start).toLocaleTimeString('en-US', {
@@ -63,20 +61,14 @@ export default async function Page({ params }: { params: PlaylistParams }) {
         </div>
       </div>
       <div className="flex flex-col p-4 md:w-1/2 md:px-20">
-        {spins.items.reverse() &&
-          spins.items.map((spin, index) => (
-            <div className="mx-2 flex gap-x-2 pb-4" key={spin.id}>
-              <p>{index + 1}.</p>
-              <p>
-                {`${spin.song} - 
-                  ${spin.artist}, 
-                  ${spin.release}
-                  (${spin.label})
-                  ${spin.released}
-                  `}
-              </p>
-            </div>
-          ))}
+        {spins.items.toReversed().map((spin, index) => (
+          <div className="mx-2 flex gap-x-2 pb-4" key={spin.id}>
+            <p>{index + 1}.</p>
+            <p>
+              {`${spin.song} - ${spin.artist}, ${spin.release} (${spin.label}) ${spin.released}`}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );
