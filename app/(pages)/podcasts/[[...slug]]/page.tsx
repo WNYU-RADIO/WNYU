@@ -1,24 +1,26 @@
 import { sanityFetch } from '@/sanity/lib/client';
 import {
   PODCAST_BY_SLUG_QUERY,
-  PODCAST_DEPARTMENTS,
   PODCASTS_BY_DEPARTMENT_QUERY,
 } from '@/sanity/lib/queries';
-import { PODCAST_QUERYResult, PODCASTS_QUERYResult } from '@/sanity.types';
 import PodcastsPanel from '@/app/components/PodcastsPanel';
+import type { PODCASTS_QUERYResult } from '@/sanity.types';
 
 async function PodcastsProvider({ slug }: { slug: string | undefined }) {
-  let activePodcast;
-  if (slug) {
-    activePodcast = await sanityFetch<PODCAST_QUERYResult>({
-      query: PODCAST_BY_SLUG_QUERY(slug),
+  const [activePodcast, podcasts] = await Promise.all([
+    slug
+      ? sanityFetch<PODCASTS_QUERYResult[number] | null>({
+          query: PODCAST_BY_SLUG_QUERY,
+          params: { slug },
+          tags: ['podcast'],
+        })
+      : undefined,
+    sanityFetch<PODCASTS_QUERYResult>({
+      query: PODCASTS_BY_DEPARTMENT_QUERY,
+      params: { department: 'news' },
       tags: ['podcast'],
-    });
-  }
-  const podcasts = await sanityFetch<PODCASTS_QUERYResult>({
-    query: PODCASTS_BY_DEPARTMENT_QUERY(PODCAST_DEPARTMENTS.NEWS),
-    tags: ['podcast'],
-  });
+    }),
+  ]);
 
   return <PodcastsPanel podcasts={podcasts} activePodcast={activePodcast} />;
 }
@@ -33,7 +35,7 @@ export default async function PodcastPage({
   const { slug } = await params;
 
   return (
-    <div className="h-[calc(100dvh-16rem)] md:mx-2">
+    <div className="h-[calc(100dvh-4rem)] md:mx-2">
       <PodcastsProvider slug={slug} />
     </div>
   );

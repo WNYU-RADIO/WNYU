@@ -10,10 +10,14 @@ const REFRESH_UPCOMING_INTERVAL = 5 * 60 * 1000;
 export default function UpcomingList() {
   const [upcomingResponse, refreshUpcomingResponse] = useUpcoming();
   const [upcoming, setUpcoming] = useState<Show[]>();
+
   useEffect(() => {
     if (upcomingResponse) {
       setUpcoming(upcomingResponse);
     }
+  }, [upcomingResponse]);
+
+  useEffect(() => {
     const intervalId = setInterval(() => {
       refreshUpcomingResponse();
     }, REFRESH_UPCOMING_INTERVAL);
@@ -21,7 +25,7 @@ export default function UpcomingList() {
     return () => {
       clearInterval(intervalId);
     };
-  }, [upcomingResponse, refreshUpcomingResponse]);
+  }, [refreshUpcomingResponse]);
 
   return (
     <div className="mt-4 w-full text-left">

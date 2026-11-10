@@ -1,39 +1,53 @@
-import { getShows } from '@/app/server-api';
+import { fetchWnyu, getShows } from '@/app/server-api';
 import SchedulePanel from '../../../components/SchedulePanel';
 import type { PlaylistsResponse } from '@wnyu/spinitron-sdk';
 
-async function ScheduleProvider({ showId }: { showId: string | undefined }) {
-  let playlists;
-  let activeShow;
-  const shows = await getShows();
-  if (showId) {
-    playlists = (await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/playlists?show_id=${showId}`,
-      {
-        cache: 'force-cache',
-      },
-    ).then((res) => res.json())) as PlaylistsResponse;
-    const intShowId = parseInt(showId, 10);
-    activeShow = shows.items.find((show) => show.id === intShowId);
-  }
+async function ScheduleProvider({
+  showId,
+  initialDay,
+}: {
+  showId: string | undefined;
+  initialDay: string | undefined;
+}) {
+  const [shows, playlists] = await Promise.all([
+    getShows(),
+    showId
+      ? fetchWnyu<PlaylistsResponse>(
+          'playlists',
+          new URLSearchParams({ show_id: showId }),
+        )
+      : undefined,
+  ]);
+  const activeShow = showId
+    ? shows.items.find((show) => show.id === Number(showId))
+    : undefined;
 
   return (
     <SchedulePanel
       shows={shows.items}
       activeShow={activeShow}
       playlists={playlists?.items}
+      initialDay={initialDay}
     />
   );
 }
 
 type ScheduleParams = Promise<{ showId: string | undefined }>;
+type ScheduleSearchParams = Promise<{ day?: string }>;
 
-export default async function Page({ params }: { params: ScheduleParams }) {
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: ScheduleParams;
+  searchParams: ScheduleSearchParams;
+}) {
   const { showId } = await params;
+  const { day } = await searchParams;
 
   return (
     <div className="md:mr-auto">
-      <ScheduleProvider showId={showId} />
+      <ScheduleProvider showId={showId} initialDay={day} />
     </div>
   );
 }

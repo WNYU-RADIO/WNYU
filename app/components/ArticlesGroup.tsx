@@ -8,12 +8,12 @@ const ArticlesGroup = ({ articles }: { articles: ARTICLES_QUERYResult }) => {
   return (
     <>
       {/* desktop */}
-      <div className="hidden flex-col gap-20 p-6 md:flex">
+      <div className="mx-auto hidden flex-col p-6 md:flex">
         {headerDesktopArticle && <ArticleCard article={headerDesktopArticle} />}
-        <div className="grid grid-cols-2">
-          {otherDesktopArticles.map((article, index) => (
-            <Link key={index} href={`/articles/${article.slug?.current}`}>
-              <div className="article-item">
+        <div className="grid grid-cols-2 pt-4">
+          {otherDesktopArticles.map((article) => (
+            <Link key={article.id} href={`/articles/${article.slug?.current}`}>
+              <div className="article-item pt-4">
                 <h2 className="text-2xl font-bold">{article.name}</h2>
                 <p className="text-xl text-gray-500">by {article.author}</p>
                 <p className="text-l text-gray-500">{article.date}</p>
@@ -24,8 +24,8 @@ const ArticlesGroup = ({ articles }: { articles: ARTICLES_QUERYResult }) => {
       </div>
       {/* mobile */}
       <div className="flex flex-col gap-20 md:hidden">
-        {articles.map((article, index) => (
-          <ArticleCard article={article} key={index} />
+        {articles.map((article) => (
+          <ArticleCard article={article} key={article.id} />
         ))}
       </div>
     </>

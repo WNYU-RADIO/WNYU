@@ -1,7 +1,9 @@
 import Image from 'next/image';
 import { PortableText } from '@portabletext/react';
 import { urlFor } from '@/sanity/lib/image';
-import { ARTICLE_QUERYResult } from '../../sanity.types';
+import type { ARTICLES_QUERYResult } from '../../sanity.types';
+
+type ArticleResult = ARTICLES_QUERYResult[number] | null;
 
 function formatDate(dateString: string) {
   const date = new Date(dateString);
@@ -12,7 +14,7 @@ function formatDate(dateString: string) {
   }).format(date);
 }
 
-export function Article({ article }: { article: ARTICLE_QUERYResult }) {
+export function Article({ article }: { article: ArticleResult }) {
   const { name, date, author, picture, content } = article || {};
 
   return (

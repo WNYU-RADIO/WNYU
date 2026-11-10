@@ -22,6 +22,7 @@ export default function CurrentPlaylistPanel({
         <CurrentPlaylistInfo
           playlist={current?.playlist}
           metadata={current?.metadata}
+          show={current?.show}
           dropdown={dropdown}
         />
         {dropdown ? (

@@ -1,5 +1,5 @@
-import { Show, SpinitronMetadata } from '@wnyu/spinitron-sdk';
-import { useCallback, useEffect, useState } from 'react';
+import { Show, ShowsResponse } from '@wnyu/spinitron-sdk';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { CurrentData } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -16,45 +16,60 @@ const useWNYUApi = <T>(
   path: string,
   params: URLSearchParams = new URLSearchParams(),
 ): [T | null, () => void] => {
-  const [response, setResponse] = useState(null);
+  const [response, setResponse] = useState<T | null>(null);
+  const abortControllerRef = useRef<AbortController | undefined>(undefined);
+  const queryString = params.toString();
 
   const fetchData = useCallback(() => {
+    abortControllerRef.current?.abort();
+
+    if (!path) {
+      setResponse(null);
+      return;
+    }
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
     setResponse(null);
     const url = new URL(path, API_URL);
-    url.search = params.toString();
-    fetch(url)
+    url.search = queryString;
+    fetch(url, { signal: abortController.signal })
       .then(throwIfResponseIsNotOk)
-      .then((res) => res.json())
+      .then((res) => res.json() as Promise<T>)
       .then(setResponse)
-      /* eslint-disable-next-line no-console --
-       *
-       * This error should be handled more gracefully but currently error
-       * handling is not implemented across the repository
-       */
-      .catch((e) => console.error(e));
-    /* eslint-disable-next-line react-hooks/exhaustive-deps --
-     *
-     * fetch should not be a dependency, because although it or its internal
-     * state may change from render to render, such changes are not relevant:
-     * a change in the way we make a request should not trigger an API request
-     *
-     * params is a dependency, but as an object - and often a newly-created
-     * object - depending on it directly causes spurious renders; instead, use
-     * its string value, which should be stable
-     */
-  }, [path, params.toString()]);
+      .catch((error: unknown) => {
+        if (error instanceof Error && error.name === 'AbortError') return;
+        // eslint-disable-next-line no-console -- API failures are not yet surfaced in the UI.
+        console.error(error);
+      });
+  }, [path, queryString]);
 
   useEffect(() => {
     fetchData();
+
+    return () => abortControllerRef.current?.abort();
   }, [fetchData]);
 
   return [response, fetchData];
 };
 
-const useMetadata = () => useWNYUApi<SpinitronMetadata>('/metadata');
-
 const useUpcoming = () => useWNYUApi<Show[]>('/shows/schedule/upcoming');
+
+const useShow = (showId?: number | string): [Show | null, () => void] => {
+  const [shows, refreshShows] = useWNYUApi<ShowsResponse>(
+    showId ? '/shows' : '',
+    new URLSearchParams({
+      expand: 'personas',
+      id: showId ? String(showId) : '',
+    }),
+  );
+
+  return [
+    shows?.items.find((show) => String(show.id) === String(showId)) ?? null,
+    refreshShows,
+  ];
+};
 
 const useCurrent = () => useWNYUApi<CurrentData>('/current');
 
-export { useMetadata, useUpcoming, useCurrent };
+export { useUpcoming, useShow, useCurrent };

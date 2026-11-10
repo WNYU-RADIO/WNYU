@@ -1,14 +1,18 @@
 import Image from 'next/image';
 import { PortableText } from '@portabletext/react';
 import { urlFor } from '@/sanity/lib/image';
-import { PODCAST_QUERYResult } from '../../sanity.types';
 import SpotifyEmbedList from './SpotifyEmbedList';
+import type { PODCASTS_QUERYResult } from '../../sanity.types';
 
-export default function Podcast({ podcast }: { podcast: PODCAST_QUERYResult }) {
+export default function Podcast({
+  podcast,
+}: {
+  podcast: PODCASTS_QUERYResult[number] | null;
+}) {
   const { name, host, picture, description, spotifyEpisodeURLs } =
     podcast || {};
   return (
-    <div className="mx-auto flex max-w-[1200px] flex-col gap-8 space-y-6">
+    <div className="mx-auto flex max-w-[1200px] flex-col gap-6 space-y-6">
       <div className="">
         {picture?.asset?._ref && host && name ? (
           <div className="mb-4 flex flex-col gap-4">

@@ -1,10 +1,10 @@
-import { PODCAST_QUERYResult } from '@/sanity.types';
 import Podcast from './Podcast';
+import type { PODCASTS_QUERYResult } from '@/sanity.types';
 
-export default async function ShowDetailPanel({
+export default function PodcastDetailPanel({
   podcast,
 }: {
-  podcast: PODCAST_QUERYResult;
+  podcast: PODCASTS_QUERYResult[number] | null;
 }) {
   return (
     <div className="flex h-[calc(100dvh-4rem)] flex-col p-6 md:overflow-y-scroll">

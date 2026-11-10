@@ -23,11 +23,7 @@ export default function CurrentPlaylistSpinsList({
               </p>
 
               <p className="text-lg">
-                {`${spin.song} - 
-                  ${spin.artist}, 
-                  ${spin.release}
-                  (${spin.label})
-                  ${spin.released}`}
+                {`${spin.song} - ${spin.artist}, ${spin.release} (${spin.label}) ${spin.released}`}
               </p>
             </div>
           ))

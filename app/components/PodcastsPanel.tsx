@@ -1,10 +1,10 @@
-import { PODCASTS_QUERYResult, PODCAST_QUERYResult } from '@/sanity.types';
 import PodcastsDetailPanel from './PodcastDetailPanel';
 import PodcastList from './PodcastsList';
+import type { PODCASTS_QUERYResult } from '@/sanity.types';
 
 interface PodcastsPanelProps {
   podcasts: PODCASTS_QUERYResult;
-  activePodcast?: PODCAST_QUERYResult;
+  activePodcast?: PODCASTS_QUERYResult[number] | null;
 }
 
 export default function PodcastsPanel({

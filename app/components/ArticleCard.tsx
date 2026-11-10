@@ -1,15 +1,19 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { urlFor } from '@/sanity/lib/image';
-import { ARTICLE_QUERYResult } from '../../sanity.types';
+import type { ARTICLES_QUERYResult } from '../../sanity.types';
 
-export function ArticleCard({ article }: { article: ARTICLE_QUERYResult }) {
-  const { name, author, date, picture, slug } = article || {};
+export function ArticleCard({
+  article,
+}: {
+  article: ARTICLES_QUERYResult[number];
+}) {
+  const { name, author, date, picture, slug } = article;
 
   const articleUrl = slug ? `/articles/${slug.current}` : '/';
 
   return (
-    <Link href={articleUrl} passHref>
+    <Link href={articleUrl}>
       <div className="cursor-pointer">
         {picture?.asset?._ref ? (
           <Image
@@ -18,7 +22,7 @@ export function ArticleCard({ article }: { article: ARTICLE_QUERYResult }) {
               urlFor(picture?.asset?._ref).width(600).height(300).url() ??
               '/placeholder.png'
             }
-            width={600}
+            width={800}
             height={300}
             alt={name ?? ''}
           />

@@ -12,7 +12,7 @@ const ShowsSidePanel = ({
 }) => (
   <div className="flex flex-col gap-4 overflow-y-scroll p-6">
     <div className="flex h-1/2 flex-col gap-8">
-      <div className="hidden border-b-2 border-black text-6xl font-extrabold md:block">
+      <div className="hidden border-b-2 border-black text-6xl font-bold md:block">
         RADIO SHOWS
       </div>
       <div>
@@ -38,7 +38,7 @@ const ShowsSidePanel = ({
     </div>
     {podcasts && (
       <div className="flex h-1/2 flex-col gap-8">
-        <div className="mt-4 hidden border-b-2 border-black text-6xl font-extrabold md:block">
+        <div className="mt-4 hidden border-b-2 border-black text-6xl font-bold md:block">
           PODCASTS
         </div>
         <div>
@@ -48,7 +48,7 @@ const ShowsSidePanel = ({
               key={podcast.id}
             >
               <Link href={`/podcasts/${podcast.slug?.current}`}>
-                <div className="text-5xl font-extrabold">{podcast.name}</div>
+                <div className="text-5xl">{podcast.name}</div>
                 <div className="text-2xl">with {podcast.host}</div>
               </Link>
             </div>
