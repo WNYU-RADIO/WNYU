@@ -1,13 +1,12 @@
 import { revalidateTag } from 'next/cache';
-import { type NextRequest, NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { parseBody } from 'next-sanity/webhook';
-import { hookSecret } from '@/sanity/env';
+import { hookSecret } from '@/sanity/lib/hookSecret';
 
 export async function POST(req: NextRequest) {
   try {
     const { body, isValidSignature } = await parseBody<{
       _type: string;
-      slug?: string | undefined;
     }>(req, hookSecret);
 
     if (!isValidSignature) {
@@ -20,12 +19,13 @@ export async function POST(req: NextRequest) {
 
     revalidateTag(body._type);
     return NextResponse.json({
-      status: 200,
       revalidated: true,
-      now: Date.now(),
-      body,
+      type: body._type,
     });
   } catch (error: unknown) {
-    return new Response(error as BodyInit, { status: 500 });
+    // Server-side logging keeps webhook failures observable without exposing details.
+    // eslint-disable-next-line no-console
+    console.error('Sanity revalidation failed', error);
+    return new Response('Internal Server Error', { status: 500 });
   }
 }

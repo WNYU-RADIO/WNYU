@@ -104,7 +104,14 @@ export default function NavMenu() {
                   >
                     <span className="cursor-not-allowed">podcasts</span>
                     <span className="cursor-not-allowed">sports</span>
-                    <span className="cursor-not-allowed">archives</span>
+                    <Link
+                      href="/archives"
+                      prefetch={false}
+                      onClick={handleClose}
+                      className="text-white transition-colors hover:text-red-500"
+                    >
+                      archives
+                    </Link>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -139,7 +146,12 @@ export default function NavMenu() {
         >
           STATIC
         </Link>
-        <div className="relative" data-departments-menu>
+        <div
+          className="relative"
+          data-departments-menu
+          onMouseEnter={() => setDepartmentsOpen(true)}
+          onMouseLeave={() => setDepartmentsOpen(false)}
+        >
           <button
             type="button"
             onClick={handleDepartmentsClick}
@@ -170,9 +182,14 @@ export default function NavMenu() {
                 <span className="cursor-not-allowed border-b border-gray-200 pb-2 text-gray-400">
                   SPORTS
                 </span>
-                <span className="cursor-not-allowed text-gray-400">
+                <Link
+                  href="/archives"
+                  prefetch={false}
+                  onClick={handleClose}
+                  className="transition-colors hover:text-red-600"
+                >
                   ARCHIVES
-                </span>
+                </Link>
               </motion.div>
             )}
           </AnimatePresence>

@@ -5,7 +5,7 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: process.env.NODE_ENV === 'development' ? true : false,
+  useCdn: false,
 });
 
 export async function sanityFetch<QueryResponse>({
@@ -19,10 +19,14 @@ export async function sanityFetch<QueryResponse>({
   revalidate?: number | false;
   tags?: string[];
 }) {
-  return client.fetch<QueryResponse>(query, params, {
-    cache: process.env.NODE_ENV === 'development' ? 'no-store' : 'force-cache',
-    next: {
-      tags,
-    },
-  });
+  const shouldSkipCache =
+    process.env.NODE_ENV === 'development' || revalidate === 0;
+
+  return client.fetch<QueryResponse>(
+    query,
+    params,
+    shouldSkipCache
+      ? { cache: 'no-store' }
+      : { cache: 'force-cache', next: { revalidate, tags } },
+  );
 }

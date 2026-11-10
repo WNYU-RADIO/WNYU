@@ -1,32 +1,35 @@
 'use client';
 
-import { Playlist, SpinitronMetadata } from '@wnyu/spinitron-sdk';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Textfit } from 'react-textfit';
-import { useShow } from '../client-api';
 import {
   getHosts,
   isPlaylistOnAir,
   trimSpinitronDescriptionString,
 } from '../utils';
+import type { Playlist, Show, SpinitronMetadata } from '@wnyu/spinitron-sdk';
 
 interface CurrentPlaylistInfoProps {
   playlist?: Playlist;
   metadata?: SpinitronMetadata;
+  show?: Show | null;
   dropdown?: boolean;
 }
 
 export default function CurrentPlaylistInfo({
   playlist,
   metadata,
+  show,
   dropdown = false,
 }: CurrentPlaylistInfoProps) {
-  const [show] = useShow(playlist?.show_id);
   const isOnAir = isPlaylistOnAir(playlist);
   const currentTitle = isOnAir
-    ? (metadata?.playlist_title ?? playlist?.title)
-    : (metadata?.playlist_title ?? playlist?.title ?? 'No show played yet');
+    ? (show?.title ?? metadata?.playlist_title ?? playlist?.title)
+    : (show?.title ??
+      metadata?.playlist_title ??
+      playlist?.title ??
+      'No show played yet');
   const songTitle = metadata?.song_name ?? '';
   const hostName = show?.personas?.length
     ? getHosts(show)
@@ -110,7 +113,7 @@ export default function CurrentPlaylistInfo({
                     min={8}
                     max={140}
                     throttle={50}
-                    className="flex h-full w-full items-end break-words leading-none pb-4"
+                    className="flex h-full w-full items-end break-words pb-4 leading-none"
                   >
                     {songTitle}
                   </Textfit>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { getHosts } from '../utils';
 import ListItem from './ListItem';
 import ScheduleSearchBar, { daysOfWeek } from './ScheduleSearchBar';
@@ -12,28 +12,28 @@ interface ScheduleListProps {
 }
 
 export default function ScheduleList({ shows, initialDay }: ScheduleListProps) {
-  const [filteredShows, setFilteredShows] = useState<Show[]>([]);
   const [dayFilter, setDayFilter] = useState<string>(
     initialDay && daysOfWeek.includes(initialDay)
       ? initialDay
       : daysOfWeek[new Date().getDay()],
   );
   const [nameFilter, setNameFilter] = useState<string>('');
-  useEffect(() => {
-    const filtered = shows
+  const filteredShows = useMemo(() => {
+    const normalizedNameFilter = nameFilter.toLowerCase();
+
+    return shows
       .filter((show) => {
         const showDate = new Date(show.start);
         const showDay = daysOfWeek[showDate.getDay()];
         const dayMatch = dayFilter ? showDay === dayFilter : true;
-        const nameMatch = nameFilter
-          ? show.title.toLowerCase().includes(nameFilter.toLowerCase())
+        const nameMatch = normalizedNameFilter
+          ? show.title.toLowerCase().includes(normalizedNameFilter)
           : true;
         return nameFilter ? nameMatch : dayMatch && nameMatch;
       })
       .sort(
         (a, b) => new Date(a.start).getHours() - new Date(b.start).getHours(),
       );
-    setFilteredShows(filtered);
   }, [dayFilter, nameFilter, shows]);
 
   return (

@@ -1,10 +1,14 @@
 import Image from 'next/image';
 import { PortableText } from '@portabletext/react';
 import { urlFor } from '@/sanity/lib/image';
-import { PODCAST_QUERYResult } from '../../sanity.types';
 import SpotifyEmbedList from './SpotifyEmbedList';
+import type { PODCASTS_QUERYResult } from '../../sanity.types';
 
-export default function Podcast({ podcast }: { podcast: PODCAST_QUERYResult }) {
+export default function Podcast({
+  podcast,
+}: {
+  podcast: PODCASTS_QUERYResult[number] | null;
+}) {
   const { name, host, picture, description, spotifyEpisodeURLs } =
     podcast || {};
   return (

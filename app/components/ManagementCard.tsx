@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import { urlFor } from '@/sanity/lib/image';
-import { MANAGEMENT_CARD_QUERYResult } from '../../sanity.types';
+import type { MANAGEMENT_CARDS_QUERYResult } from '../../sanity.types';
 
 export function ManagementCard({
   card,
 }: {
-  card: MANAGEMENT_CARD_QUERYResult;
+  card: MANAGEMENT_CARDS_QUERYResult[number];
 }) {
-  const { name, role, email, picture } = card || {};
+  const { name, role, email, picture } = card;
 
   return (
     <div className="min-w-[150px] max-w-[45%] break-words py-1 md:max-w-[30%]">
